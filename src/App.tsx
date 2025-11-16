@@ -7,7 +7,7 @@ import './App.css';
 
 function App() {
   return (
-    <Router>
+    <Router basename="/exocalc-front-app">
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />

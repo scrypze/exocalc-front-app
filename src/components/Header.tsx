@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import logoImage from '../assets/logo.png';
 import { useEffect, useState } from 'react';
 import './Header.css';
 
@@ -22,7 +23,7 @@ export const Header = () => {
         <div className="main-header">
           <div className="header-content">
             <Link to="/">
-              <img src="/img/image.png" alt="home" />
+              <img src={logoImage} alt="home" />
             </Link>
             <h1>Экзопланетный калькулятор</h1>
           </div>

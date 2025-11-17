@@ -43,10 +43,6 @@ const mapStarFromAPI = (star: StarFromAPI): Star => ({
 });
 
 export const starsService = {
-  /**
-   * Получить все звёзды
-   * При ошибке API возвращает mock-данные
-   */
   async getAll(): Promise<Star[]> {
     try {
       const response = await httpClient.get<StarsResponse>('/stars');
@@ -57,10 +53,6 @@ export const starsService = {
     }
   },
 
-  /**
-   * Получить звёзды с фильтрацией по названию
-   * При ошибке API возвращает отфильтрованные mock-данные
-   */
   async getByTitle(title: string): Promise<Star[]> {
     try {
       const response = await httpClient.get<StarsResponse>(
@@ -79,10 +71,6 @@ export const starsService = {
     }
   },
 
-  /**
-   * Получить звезду по ID
-   * При ошибке API возвращает звезду из mock-данных
-   */
   async getById(id: number): Promise<Star | undefined> {
     try {
       const response = await httpClient.get<StarResponse>(`/stars/${id}`);
@@ -93,19 +81,11 @@ export const starsService = {
     }
   },
 
-  /**
-   * Получить звёзды по списку ID
-   * При ошибке API возвращает звёзды из mock-данных
-   */
   async getByIds(ids: number[]): Promise<Star[]> {
     try {
-      // Получаем все звёзды и фильтруем по ID на клиенте
-      // Или можно сделать несколько запросов по одному ID
       const allStars = await this.getAll();
       return allStars.filter((star) => ids.includes(star.id));
     } catch (error) {
-      // Если getAll уже вернул mock-данные, то catch не сработает
-      // Но на всякий случай добавим fallback
       console.warn('API недоступен, используем mock-данные:', error);
       return starsData.filter((star) => ids.includes(star.id));
     }

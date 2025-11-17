@@ -1,5 +1,5 @@
 .main-content {
-  background-image: url('/img/bg.jpg');
+  background-image: url('../assets/bg.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -219,7 +219,7 @@
 .selected-stars-icon {
   width: 55px;
   height: 55px;
-  background: url('/img/cart.png') center/cover no-repeat;
+  background: url('../assets/cart.png') center/cover no-repeat;
   border-radius: 50%;
 }
 
@@ -230,7 +230,6 @@
   line-height: 1;
 }
 
-/* Адаптивность для планшетов и мобильных устройств */
 @media (max-width: 768px) {
   .page-title {
     font-size: 48px;

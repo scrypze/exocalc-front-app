@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import type { Star } from '../types';
 import { starsService } from '../modules/stars/starsService';
 import { Breadcrumbs } from '../components/Breadcrumbs/Breadcrumbs';
+import defaultStarImage from '../assets/base.jpeg';
 import './StarDetail.css';
 
 export const StarDetail = () => {
@@ -69,7 +70,7 @@ export const StarDetail = () => {
       <div className="info-panel">
         <div className="star-image-container">
           <img 
-            src={star.imagePath && star.imagePath.trim() !== '' ? star.imagePath : '/img/base.jpeg'} 
+            src={star.imagePath && star.imagePath.trim() !== '' ? star.imagePath : defaultStarImage} 
             alt={star.title} 
             className="star-image" 
           />

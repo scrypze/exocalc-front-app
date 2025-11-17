@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import type { Star } from '../../types';
+import defaultStarImage from '../../assets/base.jpeg';
 import './StarCard.css';
 
 interface StarCardProps {
@@ -7,10 +8,9 @@ interface StarCardProps {
 }
 
 export const StarCard = ({ star }: StarCardProps) => {
-  const defaultImage = '/img/base.jpeg';
   const imageSrc = star.imagePath && star.imagePath.trim() !== '' 
     ? star.imagePath 
-    : defaultImage;
+    : defaultStarImage;
 
   return (
     <div className="star-card">

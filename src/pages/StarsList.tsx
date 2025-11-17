@@ -1,18 +1,29 @@
 import { useState, useEffect, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 import type { Star } from '../types';
 import { starsService } from '../modules/stars/starsService';
 import { starFilters } from '../modules/stars/starFilters';
 import { StarCard } from '../components/StarCard/StarCard';
 import { SearchForm } from '../components/SearchForm/SearchForm';
 import { Breadcrumbs } from '../components/Breadcrumbs/Breadcrumbs';
+import { setSearchQueryAction, useSearchQuery } from '../slices/filterSlice';
 import './StarsList.css';
 
 export const StarsList = () => {
+  const dispatch = useDispatch();
+  const searchQuery = useSearchQuery();
   const [stars, setStars] = useState<Star[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [localSearchQuery, setLocalSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const lastSearchQuery = useRef<string>('');
+
+  // Синхронизируем локальное состояние с Redux при загрузке
+  useEffect(() => {
+    if (searchQuery) {
+      setLocalSearchQuery(searchQuery);
+    }
+  }, [searchQuery]);
 
   useEffect(() => {
     const loadStars = async () => {
@@ -36,7 +47,10 @@ export const StarsList = () => {
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const normalizedQuery = searchQuery.trim();
+    const normalizedQuery = localSearchQuery.trim();
+    
+    // Сохраняем фильтр в Redux
+    dispatch(setSearchQueryAction(normalizedQuery));
     
     // Если запрос не изменился, не делаем новый запрос
     if (lastSearchQuery.current === normalizedQuery) {
@@ -64,13 +78,17 @@ export const StarsList = () => {
     }
   };
 
+  const handleSearchChange = (value: string) => {
+    setLocalSearchQuery(value);
+  };
+
   return (
     <div className="main-content">
       <Breadcrumbs />
       <h1 className="page-title">Звёзды</h1>
       <SearchForm
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
+        searchQuery={localSearchQuery}
+        onSearchChange={handleSearchChange}
         onSearchSubmit={handleSearch}
       />
 

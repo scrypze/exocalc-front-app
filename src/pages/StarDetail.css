@@ -1,5 +1,5 @@
 .main-content {
-  background-image: url('/img/bg.jpg');
+  background-image: url('../assets/bg.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -127,7 +127,6 @@
   font-weight: bold;
 }
 
-/* Адаптивность для планшетов и мобильных устройств */
 @media (max-width: 768px) {
   .star-title {
     font-size: 36px;

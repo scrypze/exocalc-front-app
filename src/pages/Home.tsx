@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import planIcon from '../assets/cart.png';
 import './Home.css';
 
 export const Home = () => {
@@ -14,7 +15,7 @@ export const Home = () => {
       <div className="home-container">
         <div className="home-section">
           <div className="home-section-content">
-            <img src="/img/cart.png" alt="Рассчёт экзопланет" className="home-icon" />
+            <img src={planIcon} alt="Рассчёт экзопланет" className="home-icon" />
             <h2 className="home-title">Рассчёт экзопланет</h2>
             <p className="home-description">
               Исследуйте удивительный мир звёзд: от ближайших к Солнцу до самых ярких на ночном небе. 

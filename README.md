@@ -4,10 +4,12 @@ React-приложение для работы со звёздами и их с�
 
 ## Технологии
 
-- React 18
+- React 19
 - TypeScript
 - Vite
 - React Router DOM
+- Tauri (для десктопных приложений)
+- Redux Toolkit
 
 ## Функциональность
 
@@ -37,6 +39,47 @@ npm run build
 ### Предпросмотр production сборки
 ```bash
 npm run preview
+```
+
+## Tauri - Десктопное приложение
+
+Проект поддерживает сборку десктопного приложения с помощью Tauri.
+
+### Требования для Tauri
+
+- Rust (установите с [rustup.rs](https://rustup.rs/))
+- Системные зависимости для вашей платформы (см. [документацию Tauri](https://tauri.app/v1/guides/getting-started/prerequisites))
+
+### Запуск Tauri в режиме разработки
+
+1. Убедитесь, что dev сервер запущен в отдельном терминале:
+```bash
+npm run dev
+```
+
+2. В другом терминале запустите Tauri:
+```bash
+npm run tauri:dev
+```
+
+### Сборка десктопного приложения
+
+```bash
+npm run tauri:build
+```
+
+Собранное приложение будет находиться в `src-tauri/target/release/bundle/`
+
+### Структура Tauri
+
+```
+src-tauri/
+├── src/
+│   └── main.rs          # Rust код приложения
+├── icons/               # Иконки приложения
+├── Cargo.toml          # Rust зависимости
+├── tauri.conf.json     # Конфигурация Tauri
+└── build.rs            # Скрипт сборки
 ```
 
 ## Структура проекта

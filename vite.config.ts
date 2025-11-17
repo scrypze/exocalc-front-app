@@ -4,6 +4,8 @@ import { VitePWA } from 'vite-plugin-pwa'
 import fs from 'fs'
 import path from 'path'
 
+const isTauri = process.env.TAURI_PLATFORM === 'tauri' || process.env.TAURI_DEV === 'true' || process.env.TAURI_PLATFORM !== undefined || process.env.npm_lifecycle_script?.includes('build:tauri')
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -11,7 +13,7 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       devOptions: {
-        enabled: true,
+        enabled: !isTauri, 
       },
       manifest: {
         name: "Экзопланетный калькулятор",
@@ -36,14 +38,16 @@ export default defineConfig({
       },
     })
   ],
-  base: "/exocalc-front-app",
+  base: isTauri ? "/" : "/exocalc-front-app",
   server: {
     port: 3000,
     host: true,
-    https: {
-      key: fs.readFileSync(path.resolve(__dirname, 'cert.key')),
-      cert: fs.readFileSync(path.resolve(__dirname, 'cert.crt')),
-    },
+    ...(isTauri ? {} : {
+      https: {
+        key: fs.readFileSync(path.resolve(__dirname, 'cert.key')),
+        cert: fs.readFileSync(path.resolve(__dirname, 'cert.crt')),
+      },
+    }),
     proxy: {
       "/api": {
         target: "http://localhost:8080",

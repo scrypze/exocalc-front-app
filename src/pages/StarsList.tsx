@@ -34,7 +34,6 @@ export const StarsList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Синхронизируем локальное состояние с Redux при загрузке
   useEffect(() => {
     setLocalSearchQuery(searchQuery || '');
   }, [searchQuery]);

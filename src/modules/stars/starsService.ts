@@ -2,7 +2,6 @@ import type { Star } from '../../types';
 import { httpClient } from '../api/httpClient';
 import { starsData } from '../../data/stars';
 
-// Интерфейс для данных от API (snake_case)
 interface StarFromAPI {
   id: number;
   title: string;
@@ -26,7 +25,6 @@ interface StarResponse {
   star: StarFromAPI;
 }
 
-// Функция для преобразования данных из API в формат фронтенда
 const mapStarFromAPI = (star: StarFromAPI): Star => ({
   id: star.id,
   title: star.title,

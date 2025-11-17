@@ -5,6 +5,7 @@ import './Header.css';
 
 export const Header = () => {
   const [isMobile, setIsMobile] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -16,6 +17,12 @@ export const Header = () => {
 
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  useEffect(() => {
+    if (isMobile) {
+      setIsMenuOpen(false);
+    }
+  }, [isMobile]);
 
   return (
     <>
@@ -32,9 +39,28 @@ export const Header = () => {
       <div className="gray-space">
         {!isMobile && (
           <div className="nav-buttons">
-            <Link to="/stars" className="nav-btn">
-              Каталог звёзд
-            </Link>
+            <div className="nav-menu">
+              <button
+                type="button"
+                className="nav-menu-btn"
+                onClick={() => setIsMenuOpen((prev) => !prev)}
+                aria-haspopup="true"
+                aria-expanded={isMenuOpen}
+              >
+                Меню
+              </button>
+              {isMenuOpen && (
+                <div className="nav-menu-list">
+                  <Link
+                    to="/stars"
+                    className="nav-menu-link"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Каталог звёзд
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
         )}
         {isMobile && (

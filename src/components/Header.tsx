@@ -1,7 +1,21 @@
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import './Header.css';
 
 export const Header = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 545);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <>
       <header>
@@ -15,25 +29,29 @@ export const Header = () => {
         </div>
       </header>
       <div className="gray-space">
-        <div className="nav-buttons">
-          <Link to="/stars" className="nav-btn">
-            Каталог звёзд
-          </Link>
-        </div>
-        <div 
-          className="nav-mobile-wrapper"
-          onClick={(event) => event.currentTarget.classList.toggle('active')}
-        >
-          <div className="nav-mobile-target" />
-          <div 
-            className="nav-mobile-menu"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <Link to="/stars" className="nav-link-mobile">
+        {!isMobile && (
+          <div className="nav-buttons">
+            <Link to="/stars" className="nav-btn">
               Каталог звёзд
             </Link>
           </div>
-        </div>
+        )}
+        {isMobile && (
+          <div 
+            className="nav-mobile-wrapper"
+            onClick={(event) => event.currentTarget.classList.toggle('active')}
+          >
+            <div className="nav-mobile-target" />
+            <div 
+              className="nav-mobile-menu"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <Link to="/stars" className="nav-link-mobile">
+                Каталог звёзд
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

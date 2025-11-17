@@ -83,6 +83,17 @@ header img {
   justify-content: center;
 }
 
+/* Показываем бургер-меню на маленьких экранах */
+@media screen and (max-width: 545px) {
+  .nav-mobile-wrapper {
+    display: flex !important;
+  }
+  
+  .nav-buttons {
+    display: none !important;
+  }
+}
+
 .nav-mobile-target {
   height: 2px;
   width: 100%;
@@ -165,11 +176,11 @@ header img {
   }
 
   .nav-buttons {
-    display: none;
+    display: none !important;
   }
 
   .nav-mobile-wrapper {
-    display: flex;
+    display: flex !important;
   }
 
   .header-content h1 {

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import type { Star } from '../types';
 import { starsService } from '../modules/stars/starsService';
@@ -6,80 +6,132 @@ import { starFilters } from '../modules/stars/starFilters';
 import { StarCard } from '../components/StarCard/StarCard';
 import { SearchForm } from '../components/SearchForm/SearchForm';
 import { Breadcrumbs } from '../components/Breadcrumbs/Breadcrumbs';
-import { setSearchQueryAction, useSearchQuery } from '../slices/filterSlice';
+import {
+  setSearchQueryAction,
+  setMassRangeAction,
+  useSearchQuery,
+  useMassRange,
+} from '../slices/filterSlice';
 import './StarsList.css';
+
+const parseMassValue = (mass: string) => {
+  if (!mass) {
+    return null;
+  }
+  const sanitized = mass.replace(',', '.');
+  const match = sanitized.match(/[0-9]+(\.[0-9]+)?/);
+  return match ? parseFloat(match[0]) : null;
+};
 
 export const StarsList = () => {
   const dispatch = useDispatch();
   const searchQuery = useSearchQuery();
+  const massRange = useMassRange();
   const [stars, setStars] = useState<Star[]>([]);
   const [localSearchQuery, setLocalSearchQuery] = useState('');
+  const [localMassMin, setLocalMassMin] = useState('');
+  const [localMassMax, setLocalMassMax] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const lastSearchQuery = useRef<string>('');
 
   // Синхронизируем локальное состояние с Redux при загрузке
   useEffect(() => {
-    if (searchQuery) {
-      setLocalSearchQuery(searchQuery);
-    }
+    setLocalSearchQuery(searchQuery || '');
   }, [searchQuery]);
 
   useEffect(() => {
-    const loadStars = async () => {
+    setLocalMassMin(massRange.min || '');
+    setLocalMassMax(massRange.max || '');
+  }, [massRange]);
+
+  const performSearch = async (
+    query: string,
+    minValueRaw: string,
+    maxValueRaw: string
+  ) => {
+    const filteredByTitle = query
+      ? await starFilters.byTitle(query)
+      : await starsService.getAll();
+
+    let minValue = minValueRaw !== '' ? Number(minValueRaw) : null;
+    let maxValue = maxValueRaw !== '' ? Number(maxValueRaw) : null;
+
+    if (minValue !== null && Number.isNaN(minValue)) {
+      minValue = null;
+    }
+
+    if (maxValue !== null && Number.isNaN(maxValue)) {
+      maxValue = null;
+    }
+
+    if (minValue !== null && maxValue !== null && minValue > maxValue) {
+      const temp = minValue;
+      minValue = maxValue;
+      maxValue = temp;
+    }
+
+    const filteredByMass = filteredByTitle.filter((star) => {
+      if (minValue === null && maxValue === null) {
+        return true;
+      }
+      const massValue = parseMassValue(star.mass);
+      if (massValue === null) {
+        return false;
+      }
+      if (minValue !== null && massValue < minValue) {
+        return false;
+      }
+      if (maxValue !== null && massValue > maxValue) {
+        return false;
+      }
+      return true;
+    });
+
+    setStars(filteredByMass);
+  };
+
+  useEffect(() => {
+    const runSearch = async () => {
       try {
         setLoading(true);
         setError(null);
-        const allStars = await starsService.getAll();
-        setStars(allStars);
-        lastSearchQuery.current = '';
+        await performSearch(
+          searchQuery.trim(),
+          massRange.min.trim(),
+          massRange.max.trim()
+        );
       } catch (err) {
-        setError('Ошибка загрузки звёзд. Проверьте подключение к API.');
+        setError('Ошибка поиска звёзд.');
         console.error(err);
       } finally {
         setLoading(false);
       }
     };
 
-    loadStars();
-  }, []);
+    runSearch();
+  }, [searchQuery, massRange.min, massRange.max]);
 
-  const handleSearch = async (e: React.FormEvent) => {
+  const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const normalizedQuery = localSearchQuery.trim();
-    
-    // Сохраняем фильтр в Redux
-    dispatch(setSearchQueryAction(normalizedQuery));
-    
-    // Если запрос не изменился, не делаем новый запрос
-    if (lastSearchQuery.current === normalizedQuery) {
-      console.log('Поиск с тем же запросом, пропускаем');
-      return;
-    }
 
-    console.log('Выполняем новый поиск:', normalizedQuery);
-    try {
-      setLoading(true);
-      setError(null);
-      
-      // Если запрос пустой, загружаем все звёзды
-      const filtered = normalizedQuery 
-        ? await starFilters.byTitle(normalizedQuery)
-        : await starsService.getAll();
-      
-      setStars(filtered);
-      lastSearchQuery.current = normalizedQuery;
-    } catch (err) {
-      setError('Ошибка поиска звёзд.');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+    const normalizedQuery = localSearchQuery.trim();
+    const normalizedMin = localMassMin.trim();
+    const normalizedMax = localMassMax.trim();
+
+    dispatch(setSearchQueryAction(normalizedQuery));
+    dispatch(setMassRangeAction({ min: normalizedMin, max: normalizedMax }));
   };
 
   const handleSearchChange = (value: string) => {
     setLocalSearchQuery(value);
+  };
+
+  const handleMassMinChange = (value: string) => {
+    setLocalMassMin(value);
+  };
+
+  const handleMassMaxChange = (value: string) => {
+    setLocalMassMax(value);
   };
 
   return (
@@ -88,7 +140,11 @@ export const StarsList = () => {
       <h1 className="page-title">Звёзды</h1>
       <SearchForm
         searchQuery={localSearchQuery}
+        massMin={localMassMin}
+        massMax={localMassMax}
         onSearchChange={handleSearchChange}
+        onMassMinChange={handleMassMinChange}
+        onMassMaxChange={handleMassMaxChange}
         onSearchSubmit={handleSearch}
       />
 

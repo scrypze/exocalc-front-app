@@ -52,4 +52,13 @@ export default defineConfig({
       },
     },
   },
+  preview: {
+    host: '172.20.10.4',
+    port: 3001,
+    strictPort: true,
+    https: {
+      key: fs.readFileSync(path.resolve(__dirname, 'cert.key')),
+      cert: fs.readFileSync(path.resolve(__dirname, 'cert.crt')),
+    },
+  },
 })

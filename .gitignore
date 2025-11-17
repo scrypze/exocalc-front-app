@@ -22,3 +22,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# SSL certificates (never commit private keys!)
+*.key
+*.crt
+ca.key
+ca.crt
+cert.key
+cert.crt

@@ -20,6 +20,20 @@ export const Header = () => {
             Каталог звёзд
           </Link>
         </div>
+        <div 
+          className="nav-mobile-wrapper"
+          onClick={(event) => event.currentTarget.classList.toggle('active')}
+        >
+          <div className="nav-mobile-target" />
+          <div 
+            className="nav-mobile-menu"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <Link to="/stars" className="nav-link-mobile">
+              Каталог звёзд
+            </Link>
+          </div>
+        </div>
       </div>
     </>
   );

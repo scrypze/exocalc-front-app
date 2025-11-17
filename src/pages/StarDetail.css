@@ -127,3 +127,63 @@
   font-weight: bold;
 }
 
+/* Адаптивность для планшетов и мобильных устройств */
+@media (max-width: 768px) {
+  .star-title {
+    font-size: 36px;
+    margin: 0 0 30px 0;
+  }
+
+  .info-panel {
+    grid-template-columns: 1fr;
+    height: auto;
+    padding: 20px;
+    gap: 20px;
+  }
+
+  .star-image-container {
+    width: 100%;
+    height: 250px;
+  }
+
+  .back-button {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    margin-top: 20px;
+    width: fit-content;
+  }
+}
+
+@media (max-width: 545px) {
+  .main-content {
+    padding: 15px;
+  }
+
+  .star-title {
+    font-size: 28px;
+    margin: 0 0 20px 0;
+  }
+
+  .info-panel {
+    padding: 15px;
+    gap: 15px;
+  }
+
+  .star-image-container {
+    height: 200px;
+  }
+
+  .property-name,
+  .property-value {
+    font-size: 14px;
+  }
+
+  .back-button {
+    width: 100%;
+    justify-content: center;
+    font-size: 14px;
+    padding: 10px 16px;
+  }
+}
+

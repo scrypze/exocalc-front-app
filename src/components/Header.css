@@ -71,3 +71,130 @@ header img {
   background-color: #444444;
 }
 
+/* Бургер-меню для мобильных устройств */
+.nav-mobile-wrapper {
+  display: none;
+  height: 30px;
+  width: 30px;
+  transition: all 0.4s linear;
+  cursor: pointer;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-mobile-target {
+  height: 2px;
+  width: 100%;
+  background-color: #ffffff;
+  position: relative;
+  transition: all 0.2s linear;
+}
+
+.nav-mobile-wrapper.active .nav-mobile-target {
+  transform: rotate(45deg);
+}
+
+.nav-mobile-target::after,
+.nav-mobile-target::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  background-color: #ffffff;
+}
+
+.nav-mobile-target::after {
+  top: -7px;
+}
+
+.nav-mobile-target::before {
+  bottom: -7px;
+}
+
+.nav-mobile-wrapper.active .nav-mobile-target::after {
+  display: none;
+}
+
+.nav-mobile-wrapper.active .nav-mobile-target::before {
+  top: 0;
+  transform: rotate(90deg);
+}
+
+.nav-mobile-menu {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  flex-direction: column;
+  gap: 15px 0;
+  background-color: #1B1B1B;
+  padding: 20px;
+  min-width: 150px;
+  border-radius: 10px;
+  border: 1px solid #A9A9A9;
+  display: none;
+  z-index: 1000;
+}
+
+.nav-mobile-wrapper.active .nav-mobile-menu {
+  display: flex;
+}
+
+.nav-link-mobile {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 18px;
+  padding: 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+  font-family: "SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.nav-link-mobile:hover {
+  background-color: #444444;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 545px) {
+  .gray-space {
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+
+  .nav-buttons {
+    display: none;
+  }
+
+  .nav-mobile-wrapper {
+    display: flex;
+  }
+
+  .header-content h1 {
+    font-size: 24px;
+  }
+
+  header img {
+    width: 50px;
+    height: 35px;
+  }
+
+  .main-header {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+
+@media (max-width: 400px) {
+  .header-content h1 {
+    font-size: 20px;
+  }
+
+  .main-header {
+    height: auto;
+    min-height: 79.8px;
+  }
+}
+

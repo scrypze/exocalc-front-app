@@ -9,9 +9,6 @@ function App() {
   const isTauri = typeof window !== 'undefined' && window.location.protocol === 'tauri:';
   const basename = isTauri ? undefined : "/exocalc-front-app";
   
-  console.log('App: isTauri =', isTauri, 'basename =', basename);
-  console.log('App: protocol =', typeof window !== 'undefined' ? window.location.protocol : 'N/A');
-  
   return (
     <Router basename={basename}>
       <Header />

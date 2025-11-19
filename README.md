@@ -4,10 +4,11 @@ React-приложение для работы со звёздами и их с�
 
 ## Технологии
 
-- React 18
+- React 19
 - TypeScript
 - Vite
 - React Router DOM
+- Redux Toolkit
 
 ## Функциональность
 
@@ -70,13 +71,65 @@ src/
 - **Адаптивный дизайн** с использованием CSS Grid и Flexbox
 - **TypeScript** для типобезопасности
 
+## Настройка подключения к API
+
+Приложение настроено для работы с бэкенд API через IP адрес в локальной сети.
+
+Бэкенд API находится в проекте `Developer/develop-internet-applications` и слушает на порту `8080`.
+
+### Настройка подключения к API
+
+1. Создайте файл `.env` в корне проекта `exocalc-front-app`:
+```bash
+VITE_API_HOST=172.20.10.4
+VITE_API_PORT=8080
+VITE_API_PROTOCOL=https
+```
+
+2. Настройте параметры:
+   - `VITE_API_HOST` - IP адрес или домен вашего API сервера
+   - `VITE_API_PORT` - Порт API сервера (обычно 8080)
+   - `VITE_API_PROTOCOL` - Протокол: `https` (рекомендуется) или `http`
+
+3. Если переменные окружения не заданы, приложение будет использовать `https://localhost:8080` по умолчанию.
+
+### Примеры конфигурации
+
+**Для локальной разработки (фронтенд и API на одной машине):**
+```env
+VITE_API_HOST=localhost
+VITE_API_PORT=8080
+VITE_API_PROTOCOL=https
+```
+
+**Для подключения к API в локальной сети с HTTPS:**
+```env
+VITE_API_HOST=172.20.10.4
+VITE_API_PORT=8080
+VITE_API_PROTOCOL=https
+```
+
+**Для подключения к API с HTTP (если HTTPS не настроен):**
+```env
+VITE_API_HOST=172.20.10.4
+VITE_API_PORT=8080
+VITE_API_PROTOCOL=http
+```
+
+**Чтобы узнать IP адрес вашей машины:**
+```bash
+# macOS/Linux
+ifconfig | grep "inet " | grep -v 127.0.0.1
+
+# или
+ipconfig getifaddr en0
+```
+
+После изменения `.env` файла перезапустите dev сервер (`npm run dev`) или пересоберите приложение (`npm run build`).
+
 ## Работа с данными
 
-Приложение использует mock-данные из файла `src/data/stars.ts`. Для подключения к реальному API необходимо:
-
-1. Создать сервис для работы с API
-2. Заменить импорт mock-данных на API-запросы
-3. Настроить proxy в `vite.config.ts` при необходимости
+Приложение использует mock-данные из файла `src/data/stars.ts` как fallback, если API недоступен. Основной источник данных - бэкенд API, настроенный через переменные окружения.
 
 ## Лицензия
 

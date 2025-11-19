@@ -1,4 +1,7 @@
+const API_HOST = import.meta.env.VITE_API_HOST || '172.20.10.4';
+const API_PORT = import.meta.env.VITE_API_PORT || '8080';
+const API_PROTOCOL = import.meta.env.VITE_API_PROTOCOL || 'https';
+
 export const API_CONFIG = {
-  baseURL: 'http://localhost:8080/api',
-  timeout: 10000,
+  baseURL: `${API_PROTOCOL}://${API_HOST}:${API_PORT}/api`,
 };

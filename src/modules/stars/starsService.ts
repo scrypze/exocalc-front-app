@@ -2,7 +2,6 @@ import type { Star } from '../../types';
 import { httpClient } from '../api/httpClient';
 import { starsData } from '../../data/stars';
 
-// Интерфейс для данных от API (snake_case)
 interface StarFromAPI {
   id: number;
   title: string;
@@ -26,12 +25,19 @@ interface StarResponse {
   star: StarFromAPI;
 }
 
-// Функция для преобразования данных из API в формат фронтенда
+const normalizeImagePath = (imagePath: string): string => {
+  if (!imagePath || imagePath.trim() === '') {
+    return imagePath;
+  }
+  
+  return imagePath.replace(/^http:\/\/localhost:9000/, '/minio');
+};
+
 const mapStarFromAPI = (star: StarFromAPI): Star => ({
   id: star.id,
   title: star.title,
   description: star.description,
-  imagePath: star.image_path,
+  imagePath: normalizeImagePath(star.image_path),
   spectralType: star.spectral_type,
   temperature: star.temperature,
   radius: star.radius,

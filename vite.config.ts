@@ -4,14 +4,17 @@ import { VitePWA } from 'vite-plugin-pwa'
 import fs from 'fs'
 import path from 'path'
 
-// https://vite.dev/config/
+const keyPath = path.resolve(__dirname, 'cert.key');
+const certPath = path.resolve(__dirname, 'cert.crt');
+const hasCertificates = fs.existsSync(keyPath) && fs.existsSync(certPath);
+
 export default defineConfig({
   plugins: [
     react(),
     VitePWA({
       registerType: 'autoUpdate',
       devOptions: {
-        enabled: true,
+        enabled: true, 
       },
       manifest: {
         name: "Экзопланетный калькулятор",
@@ -40,15 +43,28 @@ export default defineConfig({
   server: {
     port: 3000,
     host: true,
-    https: {
-      key: fs.readFileSync(path.resolve(__dirname, 'cert.key')),
-      cert: fs.readFileSync(path.resolve(__dirname, 'cert.crt')),
-    },
+    ...(hasCertificates ? {
+      https: {
+        key: fs.readFileSync(keyPath),
+        cert: fs.readFileSync(certPath),
+      },
+    } : {}),
     proxy: {
       "/api": {
-        target: "http://localhost:8080",
+        target: (() => {
+          const host = process.env.VITE_API_HOST || 'localhost';
+          const port = process.env.VITE_API_PORT || '8080';
+          const protocol = process.env.VITE_API_PROTOCOL || 'https';
+          return `${protocol}://${host}:${port}`;
+        })(),
         changeOrigin: true,
+        secure: false,
         rewrite: (path) => path.replace(/^\/api/, "/"),
+      },
+      "/minio": {
+        target: "http://localhost:9000",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/minio/, ""),
       },
     },
   },
@@ -56,9 +72,29 @@ export default defineConfig({
     host: '172.20.10.4',
     port: 3001,
     strictPort: true,
-    https: {
-      key: fs.readFileSync(path.resolve(__dirname, 'cert.key')),
-      cert: fs.readFileSync(path.resolve(__dirname, 'cert.crt')),
+    ...(hasCertificates ? {
+      https: {
+        key: fs.readFileSync(keyPath),
+        cert: fs.readFileSync(certPath),
+      },
+    } : {}),
+    proxy: {
+      "/api": {
+        target: (() => {
+          const host = process.env.VITE_API_HOST || 'localhost';
+          const port = process.env.VITE_API_PORT || '8080';
+          const protocol = process.env.VITE_API_PROTOCOL || 'https';
+          return `${protocol}://${host}:${port}`;
+        })(),
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, "/"),
+      },
+      "/minio": {
+        target: "http://localhost:9000",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/minio/, ""),
+      },
     },
   },
 })

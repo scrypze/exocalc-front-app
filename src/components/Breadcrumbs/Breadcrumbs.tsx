@@ -22,29 +22,22 @@ export const Breadcrumbs = ({ currentLabel }: BreadcrumbsProps) => {
     pathSegments.forEach((segment, index) => {
       currentPath += `/${segment}`;
       
-      // Определяем название для каждого сегмента
       let label = segment;
       
       if (segment === 'stars') {
         label = 'Каталог звёзд';
       } else if (segment === 'star' && pathSegments[index + 1]) {
-        // Страница деталей звезды находится внутри каталога
-        // Добавляем промежуточный breadcrumb для каталога
         breadcrumbs.push({
           path: '/stars',
           label: 'Каталог звёзд',
         });
-        // Для страницы деталей звезды используем переданное название или ID
         label = currentLabel || `Звезда ${pathSegments[index + 1]}`;
-        // Добавляем breadcrumb для страницы деталей
         breadcrumbs.push({
           path: currentPath,
           label: label,
         });
-        // Пропускаем следующий сегмент (ID), так как мы его уже обработали
         return;
       } else if (!isNaN(Number(segment))) {
-        // Если это число (ID), пропускаем - уже обработано выше
         return;
       }
       
@@ -59,7 +52,6 @@ export const Breadcrumbs = ({ currentLabel }: BreadcrumbsProps) => {
 
   const breadcrumbs = getBreadcrumbs();
   
-  // Если только главная страница, не показываем breadcrumbs
   if (breadcrumbs.length <= 1) {
     return null;
   }

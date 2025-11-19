@@ -25,11 +25,26 @@ interface StarResponse {
   star: StarFromAPI;
 }
 
+const normalizeImagePath = (imagePath: string): string => {
+  if (!imagePath || imagePath.trim() === '') {
+    return imagePath;
+  }
+  
+  const isTauri = typeof window !== 'undefined' && window.location.protocol === 'tauri:';
+  
+  if (isTauri) {
+    const minioHost = import.meta.env.VITE_MINIO_HOST || import.meta.env.VITE_API_HOST || '172.20.10.4';
+    return imagePath.replace(/^http:\/\/localhost:9000/, `http://${minioHost}:9000`);
+  } else {
+    return imagePath.replace(/^http:\/\/localhost:9000/, '/minio');
+  }
+};
+
 const mapStarFromAPI = (star: StarFromAPI): Star => ({
   id: star.id,
   title: star.title,
   description: star.description,
-  imagePath: star.image_path,
+  imagePath: normalizeImagePath(star.image_path),
   spectralType: star.spectral_type,
   temperature: star.temperature,
   radius: star.radius,

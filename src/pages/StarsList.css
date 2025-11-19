@@ -162,19 +162,6 @@
   min-height: 0;
 }
 
-.star-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 5px;
-  margin-top: auto;
-}
-
-.add-button {
-  background: rgba(0, 128, 0, 0.5);
-  white-space: nowrap;
-  font-size: 13px;
-}
-
 .star-card .star-title {
   color: #ffffff;
   font-size: 20px;

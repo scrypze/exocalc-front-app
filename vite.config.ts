@@ -6,7 +6,6 @@ import path from 'path'
 
 const isTauri = process.env.TAURI_PLATFORM === 'tauri' || process.env.TAURI_DEV === 'true' || process.env.TAURI_PLATFORM !== undefined || process.env.npm_lifecycle_script?.includes('build:tauri')
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [
     react(),
@@ -50,9 +49,20 @@ export default defineConfig({
     }),
     proxy: {
       "/api": {
-        target: "http://localhost:8080",
+        target: (() => {
+          const host = process.env.VITE_API_HOST || 'localhost';
+          const port = process.env.VITE_API_PORT || '8080';
+          const protocol = process.env.VITE_API_PROTOCOL || 'https';
+          return `${protocol}://${host}:${port}`;
+        })(),
         changeOrigin: true,
+        secure: false,
         rewrite: (path) => path.replace(/^\/api/, "/"),
+      },
+      "/minio": {
+        target: "http://localhost:9000",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/minio/, ""),
       },
     },
   },
@@ -63,6 +73,24 @@ export default defineConfig({
     https: {
       key: fs.readFileSync(path.resolve(__dirname, 'cert.key')),
       cert: fs.readFileSync(path.resolve(__dirname, 'cert.crt')),
+    },
+    proxy: {
+      "/api": {
+        target: (() => {
+          const host = process.env.VITE_API_HOST || 'localhost';
+          const port = process.env.VITE_API_PORT || '8080';
+          const protocol = process.env.VITE_API_PROTOCOL || 'https';
+          return `${protocol}://${host}:${port}`;
+        })(),
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, "/"),
+      },
+      "/minio": {
+        target: "http://localhost:9000",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/minio/, ""),
+      },
     },
   },
 })

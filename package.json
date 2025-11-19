@@ -10,9 +10,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "deploy": "gh-pages -d dist",
-    "tauri": "tauri",
-    "tauri:dev": "tauri dev",
-    "tauri:build": "npm run build:tauri && tauri build"
+    "tauri": "npx --yes @tauri-apps/cli",
+    "tauri:dev": "npx --yes @tauri-apps/cli dev",
+    "tauri:build": "npm run build:tauri && npx --yes @tauri-apps/cli build"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.10.1",

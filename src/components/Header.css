@@ -45,69 +45,16 @@ header img {
   gap: 10px;
 }
 
-.nav-menu {
-  position: relative;
-}
-
-.nav-menu-btn {
-  background-color: #1B1B1B;
-  color: white;
-  border: 3px solid #A9A9A9;
-  border-radius: 30px;
-  padding: 8px 24px 8px 16px;
-  font-size: 20px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  font-family: "SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.nav-menu-btn::after {
-  content: '';
-  border: solid white;
-  border-width: 0 2px 2px 0;
-  display: inline-block;
-  padding: 4px;
-  transform: rotate(45deg);
-  transition: transform 0.3s;
-}
-
-.nav-menu-btn[aria-expanded="true"]::after {
-  transform: rotate(-135deg);
-}
-
-.nav-menu-btn:hover {
-  background-color: #444444;
-}
-
-.nav-menu-list {
-  position: absolute;
-  top: calc(100% + 12px);
-  right: 0;
-  background-color: #1B1B1B;
-  border: 1px solid #A9A9A9;
-  border-radius: 10px;
-  padding: 12px 0;
-  min-width: 180px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-  display: flex;
-  flex-direction: column;
-  z-index: 1000;
-}
-
 .nav-menu-link {
   color: white;
   text-decoration: none;
-  font-size: 18px;
-  padding: 10px 20px;
-  transition: background-color 0.3s;
+  font-size: 20px;
   font-family: "SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif;
+  transition: text-decoration 0.3s;
 }
 
 .nav-menu-link:hover {
-  background-color: #444444;
+  text-decoration: underline;
 }
 
 .nav-btn {

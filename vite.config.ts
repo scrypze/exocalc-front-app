@@ -20,7 +20,7 @@ export default defineConfig({
         name: "Экзопланетный калькулятор",
         short_name: "Экзокалькулятор",
         start_url: "/exocalc-front-app/",
-        display: "standalone",
+        display: "minimal-ui",
         background_color: "#fdfdfd",
         theme_color: "#db4938",
         orientation: "portrait-primary",

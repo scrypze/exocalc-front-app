@@ -136,7 +136,6 @@ export const StarsList = () => {
   return (
     <div className="main-content">
       <Breadcrumbs />
-      <h1 className="page-title">Звёзды</h1>
       <SearchForm
         searchQuery={localSearchQuery}
         massMin={localMassMin}

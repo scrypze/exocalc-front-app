@@ -20,6 +20,9 @@ header img {
   display: flex;
   align-items: center;
   gap: 0px;
+  justify-content: space-between;
+  width: 100%;
+  padding-right: 30px;
 }
 
 .header-content h1 {
@@ -28,6 +31,20 @@ header img {
   margin: 0;
   font-family: "SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: bold;
+}
+
+.header-nav-link {
+  color: white;
+  text-decoration: none;
+  font-size: 24px;
+  font-weight: bold;
+  font-family: "SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif;
+  margin-left: auto;
+  transition: text-decoration 0.3s;
+}
+
+.header-nav-link:hover {
+  text-decoration: underline;
 }
 
 .gray-space {
@@ -43,18 +60,6 @@ header img {
 .nav-buttons {
   display: flex;
   gap: 10px;
-}
-
-.nav-menu-link {
-  color: white;
-  text-decoration: none;
-  font-size: 20px;
-  font-family: "SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif;
-  transition: text-decoration 0.3s;
-}
-
-.nav-menu-link:hover {
-  text-decoration: underline;
 }
 
 .nav-btn {
@@ -84,24 +89,15 @@ header img {
 }
 
 .nav-mobile-wrapper {
-  display: none;
   height: 30px;
   width: 30px;
   transition: all 0.4s linear;
   cursor: pointer;
   position: relative;
+  display: flex;
   align-items: center;
   justify-content: center;
-}
-
-@media screen and (max-width: 545px) {
-  .nav-mobile-wrapper {
-    display: flex !important;
-  }
-  
-  .nav-buttons {
-    display: none !important;
-  }
+  margin-left: auto;
 }
 
 .nav-mobile-target {
@@ -177,23 +173,16 @@ header img {
 }
 
 @media (max-width: 545px) {
-  .gray-space {
-    flex-direction: row-reverse;
-    justify-content: space-between;
-    padding-left: 30px;
-    padding-right: 30px;
-  }
-
-  .nav-buttons {
-    display: none !important;
-  }
-
-  .nav-mobile-wrapper {
-    display: flex !important;
+  .header-content {
+    padding-right: 15px;
   }
 
   .header-content h1 {
-    font-size: 24px;
+    font-size: 20px;
+  }
+
+  .header-nav-link {
+    font-size: 18px;
   }
 
   header img {
@@ -209,7 +198,11 @@ header img {
 
 @media (max-width: 400px) {
   .header-content h1 {
-    font-size: 20px;
+    font-size: 16px;
+  }
+
+  .header-nav-link {
+    font-size: 16px;
   }
 
   .main-header {

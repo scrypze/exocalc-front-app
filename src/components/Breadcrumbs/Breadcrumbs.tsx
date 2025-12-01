@@ -25,11 +25,11 @@ export const Breadcrumbs = ({ currentLabel }: BreadcrumbsProps) => {
       let label = segment;
       
       if (segment === 'stars') {
-        label = 'Каталог звёзд';
+        label = 'Звёзды';
       } else if (segment === 'star' && pathSegments[index + 1]) {
         breadcrumbs.push({
           path: '/stars',
-          label: 'Каталог звёзд',
+          label: 'Звёзды',
         });
         label = currentLabel || `Звезда ${pathSegments[index + 1]}`;
         breadcrumbs.push({

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import planIcon from '../assets/cart.png';
 import './Home.css';
 
@@ -8,24 +7,18 @@ const featureCards = [
     title: 'Рассчёт экзопланет',
     description:
       'Исследуйте удивительный мир звёзд: от ближайших к Солнцу до самых ярких на ночном небе. Узнайте характеристики различных звёзд и их уникальные свойства.',
-    cta: 'Начать рассчет экзопланет',
-    link: '/stars',
     icon: planIcon,
   },
   {
-    title: 'Каталог звёзд',
+    title: 'Звёзды',
     description:
       'Быстрая навигация по каталогу звёзд, фильтрация по характеристикам и формирование подборок для исследований.',
-    cta: 'Перейти в каталог',
-    link: '/stars',
     icon: planIcon,
   },
   {
     title: 'Аналитика наблюдений',
     description:
       'Сравнивайте параметры звёзд, оценивайте массу, радиус и светимость, формируйте отчёты.',
-    cta: 'Изучить возможности',
-    link: '/stars',
     icon: planIcon,
   },
 ];
@@ -67,9 +60,6 @@ export const Home = () => {
               <img src={activeFeature.icon} alt={activeFeature.title} className="home-icon" />
               <h2 className="home-title">{activeFeature.title}</h2>
               <p className="home-description">{activeFeature.description}</p>
-              <Link to={activeFeature.link} className="home-button">
-                {activeFeature.cta}
-              </Link>
             </div>
           </div>
           <button

@@ -48,7 +48,7 @@ export const Header = () => {
               onClick={(event) => event.stopPropagation()}
             >
               <Link to="/stars" className="nav-link-mobile">
-                Каталог звёзд
+                Звёзды
               </Link>
             </div>
           </div>

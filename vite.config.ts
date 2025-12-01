@@ -68,7 +68,7 @@ export default defineConfig({
     },
   },
   preview: {
-    host: '172.20.10.4',
+    host: '0.0.0.0',
     port: 3001,
     strictPort: true,
     ...(hasCertificates ? {

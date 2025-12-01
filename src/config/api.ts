@@ -1,7 +1,8 @@
-const API_HOST = import.meta.env.VITE_API_HOST || '172.20.10.4';
-const API_PORT = import.meta.env.VITE_API_PORT || '8080';
-const API_PROTOCOL = import.meta.env.VITE_API_PROTOCOL || 'https';
+// Всегда используем относительный путь для проксирования через Vite/веб-сервер
+// Прокси настроен в vite.config.ts для dev/preview режимов
+// На production сервере должен быть настроен reverse proxy (nginx/apache)
+const baseURL = '/api';
 
 export const API_CONFIG = {
-  baseURL: `${API_PROTOCOL}://${API_HOST}:${API_PORT}/api`,
+  baseURL,
 };

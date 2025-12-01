@@ -52,14 +52,13 @@ export default defineConfig({
     proxy: {
       "/api": {
         target: (() => {
-          const host = process.env.VITE_API_HOST || 'localhost';
+          const host = process.env.VITE_API_HOST || '172.20.10.4';
           const port = process.env.VITE_API_PORT || '8080';
-          const protocol = process.env.VITE_API_PROTOCOL || 'https';
+          const protocol = process.env.VITE_API_PROTOCOL || 'http';
           return `${protocol}://${host}:${port}`;
         })(),
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path.replace(/^\/api/, "/"),
       },
       "/minio": {
         target: "http://localhost:9000",
@@ -81,14 +80,13 @@ export default defineConfig({
     proxy: {
       "/api": {
         target: (() => {
-          const host = process.env.VITE_API_HOST || 'localhost';
+          const host = process.env.VITE_API_HOST || '172.20.10.4';
           const port = process.env.VITE_API_PORT || '8080';
-          const protocol = process.env.VITE_API_PROTOCOL || 'https';
+          const protocol = process.env.VITE_API_PROTOCOL || 'http';
           return `${protocol}://${host}:${port}`;
         })(),
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path.replace(/^\/api/, "/"),
       },
       "/minio": {
         target: "http://localhost:9000",

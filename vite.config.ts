@@ -53,8 +53,8 @@ export default defineConfig({
       "/api": {
         target: (() => {
           const host = process.env.VITE_API_HOST || '172.20.10.4';
-          const port = process.env.VITE_API_PORT || '8080';
-          const protocol = process.env.VITE_API_PROTOCOL || 'http';
+          const port = process.env.VITE_API_PORT || '8443';
+          const protocol = process.env.VITE_API_PROTOCOL || 'https';
           return `${protocol}://${host}:${port}`;
         })(),
         changeOrigin: true,
@@ -81,8 +81,8 @@ export default defineConfig({
       "/api": {
         target: (() => {
           const host = process.env.VITE_API_HOST || '172.20.10.4';
-          const port = process.env.VITE_API_PORT || '8080';
-          const protocol = process.env.VITE_API_PROTOCOL || 'http';
+          const port = process.env.VITE_API_PORT || '8443';
+          const protocol = process.env.VITE_API_PROTOCOL || 'https';
           return `${protocol}://${host}:${port}`;
         })(),
         changeOrigin: true,

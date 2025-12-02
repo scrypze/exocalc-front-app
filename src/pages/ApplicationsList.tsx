@@ -75,6 +75,11 @@ export const ApplicationsList = () => {
       })).unwrap();
       await dispatch(getAllSelectedStars());
       alert(`Заявка ${action === 'complete' ? 'одобрена' : 'отклонена'}!`);
+      
+      const currentPath = window.location.pathname;
+      if (currentPath.includes(`/application/${id}`)) {
+        window.location.reload();
+      }
     } catch (err) {
       console.error('Ошибка модерации заявки:', err);
       alert('Ошибка модерации заявки');

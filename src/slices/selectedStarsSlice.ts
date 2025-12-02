@@ -287,7 +287,8 @@ const selectedStarsSlice = createSlice({
       })
       .addCase(moderateSelectedStars.fulfilled, (state, action) => {
         state.loading = false;
-        state.selectedStars = action.payload;
+        const payload = action.payload as any;
+        state.selectedStars = payload['selected-stars'] || payload;
       })
       .addCase(moderateSelectedStars.rejected, (state, action) => {
         state.loading = false;

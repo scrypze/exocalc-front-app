@@ -28,9 +28,7 @@ export const Application = () => {
   const [comments, setComments] = useState<{ [key: number]: string }>({});
 
   const applicationData = selectedStars as any;
-  console.log('applicationData:', applicationData);
   const isDraft = (applicationData?.Status || applicationData?.status) === 'draft';
-  console.log('isDraft:', isDraft, 'Status:', applicationData?.Status || applicationData?.status);
   const isAstronomer = user?.role === 'astronomer';
 
   useEffect(() => {
@@ -39,13 +37,10 @@ export const Application = () => {
     }
   }, [id, dispatch]);
 
+
   useEffect(() => {
     if (selectedStars) {
-      console.log('Полученные данные selectedStars:', selectedStars);
       const data = selectedStars as any;
-      console.log('Status:', data.Status);
-      console.log('Scientist:', data.Scientist);
-      console.log('Date:', data.Date);
       
       setScientistName(data.Scientist || '');
       
@@ -213,6 +208,19 @@ export const Application = () => {
     };
   });
 
+  const getStarCalculationData = (starId: number) => {
+    const item = starsItems.find((item: any) => {
+      const starData = item.star || item;
+      const id = starData.id || starData.ID || 0;
+      return id === starId;
+    });
+    if (!item) return { probableNumberOfPlanets: null, habitableZone: null };
+    return {
+      probableNumberOfPlanets: item.probable_number_of_planets ?? item.ProbableNumberOfPlanets ?? null,
+      habitableZone: item.habitable_zone ?? item.HabitableZone ?? null,
+    };
+  };
+
   const statusLabels: { [key: string]: string } = {
     draft: 'Черновик',
     formed: 'Сформирован',
@@ -331,11 +339,23 @@ export const Application = () => {
                   </div>
                   <div className="application-info-item">
                     <span className="application-info-label">Вероятное число планет:</span>
-                    <span className="application-info-value">=0</span>
+                    <span className="application-info-value">
+                      {(() => {
+                        const calcData = getStarCalculationData(star.id);
+                        return calcData.probableNumberOfPlanets !== null && calcData.probableNumberOfPlanets !== undefined
+                          ? calcData.probableNumberOfPlanets
+                          : '-';
+                      })()}
+                    </span>
                   </div>
                   <div className="application-info-item">
                     <span className="application-info-label">Обитаемая зона:</span>
-                    <span className="application-info-value">=</span>
+                    <span className="application-info-value">
+                      {(() => {
+                        const calcData = getStarCalculationData(star.id);
+                        return calcData.habitableZone || '-';
+                      })()}
+                    </span>
                   </div>
                   <div className="application-info-item">
                     <span className="application-info-label">Комментарий:</span>

@@ -205,6 +205,12 @@
   margin-top: auto;
 }
 
+.star-card-buttons .details-button {
+  width: auto;
+  flex: 1;
+  min-width: 120px;
+}
+
 .details-button:hover {
   background: #444444;
   transform: translateY(-1px);

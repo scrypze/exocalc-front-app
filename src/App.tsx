@@ -3,6 +3,8 @@ import { Header } from './components/Header';
 import { Home } from './pages/Home';
 import { StarsList } from './pages/StarsList';
 import { StarDetail } from './pages/StarDetail';
+import { Login } from './pages/Login';
+import { Application } from './pages/Application';
 import './App.css';
 
 function App() {
@@ -13,6 +15,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/stars" element={<StarsList />} />
         <Route path="/star/:id" element={<StarDetail />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/application/:id" element={<Application />} />
       </Routes>
     </Router>
   );

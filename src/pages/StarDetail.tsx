@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import type { Star } from '../types';
-import { starsService } from '../modules/stars/starsService';
+import { useDispatch, useSelector } from 'react-redux';
+import type { RootState, AppDispatch } from '../store';
+import { getStarById } from '../slices/starsSlice';
 import { Breadcrumbs } from '../components/Breadcrumbs/Breadcrumbs';
 import defaultStarImage from '../assets/base.jpeg';
 import './StarDetail.css';
@@ -9,34 +10,15 @@ import './StarDetail.css';
 export const StarDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
   
-  const [star, setStar] = useState<Star | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { selectedStar, loading, error } = useSelector((state: RootState) => state.stars);
 
   useEffect(() => {
-    const loadStar = async () => {
-      if (!id) return;
-      
-      try {
-        setLoading(true);
-        setError(null);
-        const starData = await starsService.getById(Number(id));
-        if (starData) {
-          setStar(starData);
-        } else {
-          setError('Звезда не найдена');
-        }
-      } catch (err) {
-        setError('Ошибка загрузки звезды. Проверьте подключение к API.');
-        console.error(err);
-      } finally {
-        setLoading(false);
+    if (id) {
+      dispatch(getStarById(Number(id)));
       }
-    };
-
-    loadStar();
-  }, [id]);
+  }, [id, dispatch]);
 
   if (loading) {
     return (
@@ -49,7 +31,7 @@ export const StarDetail = () => {
     );
   }
 
-  if (error || !star) {
+  if (error || (!loading && !selectedStar)) {
     return (
       <div className="main-content">
         <Breadcrumbs />
@@ -58,8 +40,25 @@ export const StarDetail = () => {
     );
   }
 
+  if (!selectedStar) {
+    return null;
+  }
+
   const handleBack = () => {
     navigate('/stars');
+  };
+
+  const star = {
+    title: selectedStar.title || '',
+    imagePath: selectedStar.image_path || '',
+    spectralType: selectedStar.spectral_type || '',
+    temperature: selectedStar.temperature || '',
+    radius: selectedStar.radius || '',
+    mass: selectedStar.mass || '',
+    luminosity: selectedStar.luminosity || '',
+    metallicity: selectedStar.metallicity || '',
+    age: selectedStar.age || '',
+    distance: selectedStar.distance || '',
   };
 
   return (

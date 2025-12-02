@@ -1,0 +1,47 @@
+.star-card-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
+.star-card-buttons .details-button {
+  flex: 1;
+  min-width: 120px;
+}
+
+.add-to-application-button,
+.remove-from-application-button {
+  display: block;
+  background: rgba(12, 30, 62, 0.6);
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 15px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  border: 1px solid #A9A9A9;
+  transition: all 0.3s ease;
+  font-family: "SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif;
+  height: 43px;
+  text-align: center;
+  line-height: 23px;
+  cursor: pointer;
+  flex: 1;
+  min-width: 120px;
+}
+
+.add-to-application-button:hover,
+.remove-from-application-button:hover {
+  background: #444444;
+  transform: translateY(-1px);
+}
+
+.remove-from-application-button {
+  background: rgba(255, 107, 107, 0.6);
+}
+
+.remove-from-application-button:hover {
+  background: rgba(255, 107, 107, 0.8);
+}
+

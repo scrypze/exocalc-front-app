@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import type { RootState, AppDispatch } from '../store';
 import type { Star } from '../types';
-import { starsService } from '../modules/stars/starsService';
-import { starFilters } from '../modules/stars/starFilters';
 import { StarCard } from '../components/StarCard/StarCard';
 import { SearchForm } from '../components/SearchForm/SearchForm';
 import { Breadcrumbs } from '../components/Breadcrumbs/Breadcrumbs';
@@ -12,6 +12,9 @@ import {
   useSearchQuery,
   useMassRange,
 } from '../slices/filterSlice';
+import { getStarsList } from '../slices/starsSlice';
+import { getSelectedStarsCount, addStarToSelected, createDraftSelectedStars, getSelectedStarsById } from '../slices/selectedStarsSlice';
+import type { ModelStar } from '../api/Api';
 import './StarsList.css';
 
 const parseMassValue = (mass: string) => {
@@ -23,16 +26,35 @@ const parseMassValue = (mass: string) => {
   return match ? parseFloat(match[0]) : null;
 };
 
+const mapStarFromAPI = (star: ModelStar): Star => ({
+  id: star.id || 0,
+  title: star.title || '',
+  description: star.description || '',
+  imagePath: star.image_path?.replace(/^http:\/\/localhost:9000/, '/minio') || '',
+  spectralType: star.spectral_type || '',
+  temperature: star.temperature || '',
+  radius: star.radius || '',
+  mass: star.mass || '',
+  luminosity: star.luminosity || '',
+  metallicity: star.metallicity || '',
+  age: star.age || '',
+  distance: star.distance || '',
+});
+
 export const StarsList = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const searchQuery = useSearchQuery();
   const massRange = useMassRange();
-  const [stars, setStars] = useState<Star[]>([]);
+  
+  const { stars: starsFromAPI, loading, error } = useSelector((state: RootState) => state.stars);
+  const { count: selectedCount, currentDraftId } = useSelector((state: RootState) => state.selectedStars);
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  
   const [localSearchQuery, setLocalSearchQuery] = useState('');
   const [localMassMin, setLocalMassMin] = useState('');
   const [localMassMax, setLocalMassMax] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [filteredStars, setFilteredStars] = useState<Star[]>([]);
 
   useEffect(() => {
     setLocalSearchQuery(searchQuery || '');
@@ -43,14 +65,21 @@ export const StarsList = () => {
     setLocalMassMax(massRange.max || '');
   }, [massRange]);
 
-  const performSearch = async (
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(getSelectedStarsCount());
+    }
+  }, [isAuthenticated, dispatch]);
+
+  const performSearch = (
+    stars: Star[],
     query: string,
     minValueRaw: string,
     maxValueRaw: string
   ) => {
     const filteredByTitle = query
-      ? await starFilters.byTitle(query)
-      : await starsService.getAll();
+      ? stars.filter((star) => star.title.toLowerCase().includes(query.toLowerCase()))
+      : stars;
 
     let minValue = minValueRaw !== '' ? Number(minValueRaw) : null;
     let maxValue = maxValueRaw !== '' ? Number(maxValueRaw) : null;
@@ -86,29 +115,25 @@ export const StarsList = () => {
       return true;
     });
 
-    setStars(filteredByMass);
+    setFilteredStars(filteredByMass);
   };
 
   useEffect(() => {
-    const runSearch = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        await performSearch(
+    const trimmedQuery = searchQuery.trim();
+    dispatch(getStarsList(trimmedQuery || undefined));
+  }, [searchQuery, dispatch]);
+
+  useEffect(() => {
+    if (starsFromAPI) {
+      const mappedStars = starsFromAPI.map(mapStarFromAPI);
+      performSearch(
+        mappedStars,
           searchQuery.trim(),
           massRange.min.trim(),
           massRange.max.trim()
         );
-      } catch (err) {
-        setError('Ошибка поиска звёзд.');
-        console.error(err);
-      } finally {
-        setLoading(false);
       }
-    };
-
-    runSearch();
-  }, [searchQuery, massRange.min, massRange.max]);
+  }, [starsFromAPI, searchQuery, massRange.min, massRange.max]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -133,6 +158,54 @@ export const StarsList = () => {
     setLocalMassMax(value);
   };
 
+  const handleAddStar = async (starId: number) => {
+    if (!isAuthenticated) {
+      alert('Для добавления звезды в заявку необходимо авторизоваться');
+      navigate('/login');
+      return;
+    }
+
+    try {
+      if (!currentDraftId) {
+        await dispatch(createDraftSelectedStars()).unwrap();
+        await dispatch(getSelectedStarsCount()).unwrap();
+      }
+      
+      await dispatch(addStarToSelected(starId)).unwrap();
+      
+      await dispatch(getSelectedStarsCount()).unwrap();
+      
+      alert('Звезда добавлена в заявку!');
+    } catch (err) {
+      console.error('Ошибка добавления звезды:', err);
+      alert('Ошибка добавления звезды в заявку');
+    }
+  };
+
+  const handleGoToApplication = async () => {
+    console.log('Клик по корзине, currentDraftId:', currentDraftId, 'selectedCount:', selectedCount);
+    
+    try {
+      let draftId = currentDraftId;
+      if (!draftId && selectedCount > 0) {
+        const countResult = await dispatch(getSelectedStarsCount()).unwrap();
+        draftId = countResult.selected_stars_id || null;
+        console.log('Обновленный draftId после getSelectedStarsCount:', draftId);
+      }
+      
+      if (draftId) {
+        await dispatch(getSelectedStarsById(draftId)).unwrap();
+        navigate(`/application/${draftId}`);
+      } else {
+        console.warn('currentDraftId не установлен, невозможно перейти к заявке');
+        alert('Заявка не найдена. Создайте новую заявку, добавив звезду.');
+      }
+    } catch (err) {
+      console.error('Ошибка загрузки заявки:', err);
+      alert('Не удалось загрузить заявку');
+    }
+  };
+
   return (
     <div className="main-content">
       <Breadcrumbs />
@@ -152,23 +225,48 @@ export const StarsList = () => {
       {!loading && !error && (
         <>
           <div className="stars-grid">
-            {stars.length === 0 ? (
+            {filteredStars.length === 0 ? (
               <div style={{ textAlign: 'center', color: '#ffffff', padding: '20px', gridColumn: '1 / -1' }}>
                 Звёзды не найдены
               </div>
             ) : (
-              stars.map((star) => (
+              filteredStars.map((star) => (
                 <StarCard
                   key={star.id}
                   star={star}
+                  onAddToApplication={handleAddStar}
+                  isAuthenticated={isAuthenticated}
                 />
               ))
             )}
           </div>
-          <div className="selected-stars-fab">
+          {isAuthenticated && selectedCount > 0 && (
+            <div 
+              className="selected-stars-fab" 
+              onClick={handleGoToApplication} 
+              style={{ 
+                cursor: 'pointer',
+                pointerEvents: 'auto',
+                opacity: 1
+              }}
+            >
+              <span className="selected-stars-icon"></span>
+              <span className="selected-stars-count">{selectedCount}</span>
+            </div>
+          )}
+          {isAuthenticated && selectedCount === 0 && (
+            <div 
+              className="selected-stars-fab" 
+              style={{ 
+                cursor: 'not-allowed',
+                pointerEvents: 'none',
+                opacity: 0.5
+              }}
+            >
             <span className="selected-stars-icon"></span>
-            <span className="selected-stars-count">0</span>
+              <span className="selected-stars-count">{selectedCount}</span>
           </div>
+          )}
         </>
       )}
     </div>

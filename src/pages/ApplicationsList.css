@@ -1,0 +1,81 @@
+.applications-table-container {
+  margin-top: 30px;
+  overflow-x: auto;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 12px;
+  border: 1px solid #A9A9A9;
+  backdrop-filter: blur(10px);
+  padding: 20px;
+}
+
+.applications-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #ffffff;
+}
+
+.applications-table thead {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.applications-table th {
+  padding: 15px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  color: #ffffff;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  font-family: "SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.applications-table td {
+  padding: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 14px;
+  font-family: "SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.applications-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transition: background 0.2s ease;
+}
+
+.applications-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.status-badge {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.table-link-button {
+  display: inline-block;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  font-family: "SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.table-link-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+@media (max-width: 768px) {
+  .applications-table-container {
+    padding: 10px;
+  }
+
+  .applications-table th,
+  .applications-table td {
+    padding: 10px 8px;
+    font-size: 12px;
+  }
+}
+

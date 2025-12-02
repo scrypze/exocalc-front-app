@@ -39,9 +39,14 @@ export const Header = () => {
             <h1>Экзопланетный калькулятор</h1>
             {!isMobile ? (
               <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
-              <Link to="/stars" className="header-nav-link">
-                Звёзды
-              </Link>
+                {isAuthenticated && (
+                  <Link to="/applications" className="header-nav-link">
+                    Заявки
+                  </Link>
+                )}
+                <Link to="/stars" className="header-nav-link">
+                  Звёзды
+                </Link>
                 {isAuthenticated ? (
                   <button onClick={handleLogout} className="header-nav-link" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
                     Выйти
@@ -62,6 +67,11 @@ export const Header = () => {
                   className="nav-mobile-menu"
                   onClick={(event) => event.stopPropagation()}
                 >
+                  {isAuthenticated && (
+                    <Link to="/applications" className="nav-link-mobile">
+                      Заявки
+                    </Link>
+                  )}
                   <Link to="/stars" className="nav-link-mobile">
                     Звёзды
                   </Link>

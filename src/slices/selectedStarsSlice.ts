@@ -310,7 +310,8 @@ const selectedStarsSlice = createSlice({
       })
       .addCase(getAllSelectedStars.fulfilled, (state, action) => {
         state.loading = false;
-        state.allApplications = action.payload.selected_stars || [];
+        const payload = action.payload as any;
+        state.allApplications = payload['selected-stars'] || payload.selected_stars || [];
       })
       .addCase(getAllSelectedStars.rejected, (state, action) => {
         state.loading = false;

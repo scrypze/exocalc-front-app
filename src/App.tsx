@@ -5,6 +5,7 @@ import { StarsList } from './pages/StarsList';
 import { StarDetail } from './pages/StarDetail';
 import { Login } from './pages/Login';
 import { Application } from './pages/Application';
+import { ApplicationsList } from './pages/ApplicationsList';
 import './App.css';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Route path="/star/:id" element={<StarDetail />} />
         <Route path="/login" element={<Login />} />
         <Route path="/application/:id" element={<Application />} />
+        <Route path="/applications" element={<ApplicationsList />} />
       </Routes>
     </Router>
   );

@@ -120,9 +120,10 @@ export const formSelectedStars = createAsyncThunk(
 
 export const moderateSelectedStars = createAsyncThunk(
   'selectedStars/moderate',
-  async ({ id, status }: { id: number; status: string }, { rejectWithValue }) => {
+  async ({ id, status, moderatorId }: { id: number; status: string; moderatorId: string }, { rejectWithValue }) => {
     try {
-      const response = await api.selectedStars.moderateUpdate(id, { status });
+      const action = status === 'completed' ? 'complete' : 'decline';
+      const response = await api.selectedStars.moderateUpdate(id, { action, moderator_id: moderatorId });
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.description || 'Ошибка модерации заявки');
@@ -147,8 +148,10 @@ export const getAllSelectedStars = createAsyncThunk(
   async (filters: { date_from?: string; date_to?: string; status?: string } | undefined = undefined, { rejectWithValue }) => {
     try {
       const response = await api.selectedStars.selectedStarsList(filters);
+      console.log('getAllSelectedStars API response:', response.data);
       return response.data;
     } catch (error: any) {
+      console.error('getAllSelectedStars error:', error);
       return rejectWithValue(error.response?.data?.description || 'Ошибка получения списка заявок');
     }
   }

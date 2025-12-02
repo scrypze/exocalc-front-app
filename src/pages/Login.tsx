@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import type { RootState, AppDispatch } from '../store';
-import { login, register, registerAstronomer, clearError } from '../slices/authSlice';
+import { login, register, registerAstronomer, clearError, getMe } from '../slices/authSlice';
 import './Login.css';
 
 export const Login = () => {
@@ -42,6 +42,7 @@ export const Login = () => {
     try {
       if (isLoginMode) {
         await dispatch(login(credentials)).unwrap();
+        await dispatch(getMe());
       } else {
         if (isAstronomerMode) {
           await dispatch(registerAstronomer(credentials)).unwrap();

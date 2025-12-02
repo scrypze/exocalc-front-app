@@ -7,6 +7,7 @@ interface AuthState {
   user: {
     login: string;
     role: string;
+    id?: string;
   } | null;
   accessToken: string | null;
   loading: boolean;
@@ -150,9 +151,12 @@ const authSlice = createSlice({
       })
       .addCase(getMe.fulfilled, (state, action) => {
         state.loading = false;
+        const payload = action.payload as any;
+        const role = payload.role || payload.Role || '';
         state.user = {
-          login: action.payload.login || '',
-          role: action.payload.role || '',
+          login: payload.login || payload.Login || '',
+          role: role,
+          id: payload.UUID || payload.uuid || payload.id || payload.ID || '',
         };
         state.isAuthenticated = true;
       })

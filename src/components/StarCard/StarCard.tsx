@@ -9,6 +9,7 @@ interface StarCardProps {
   onRemoveFromApplication?: (starId: number) => void;
   isAuthenticated?: boolean;
   showRemoveButton?: boolean;
+  isAddedToApplication?: boolean;
 }
 
 export const StarCard = ({ 
@@ -16,7 +17,8 @@ export const StarCard = ({
   onAddToApplication, 
   onRemoveFromApplication, 
   isAuthenticated = false,
-  showRemoveButton = false 
+  showRemoveButton = false,
+  isAddedToApplication = false
 }: StarCardProps) => {
   const imageSrc = star.imagePath && star.imagePath.trim() !== '' 
     ? star.imagePath 
@@ -34,13 +36,16 @@ export const StarCard = ({
         <Link to={`/star/${star.id}`} className="details-button">
           Подробнее
         </Link>
-          {isAuthenticated && onAddToApplication && !showRemoveButton && (
+          {isAuthenticated && onAddToApplication && !showRemoveButton && !isAddedToApplication && (
             <button
               onClick={() => onAddToApplication(star.id)}
               className="add-to-application-button"
             >
-              + В заявку
+              В заявку
             </button>
+          )}
+          {isAuthenticated && isAddedToApplication && !showRemoveButton && (
+            <span className="star-added-indicator">В заявке</span>
           )}
           {showRemoveButton && onRemoveFromApplication && (
             <button

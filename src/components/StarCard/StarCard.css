@@ -45,3 +45,24 @@
   background: rgba(255, 107, 107, 0.8);
 }
 
+.star-added-indicator {
+  padding: 10px 20px;
+  border-radius: 15px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: "SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif;
+  color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: default;
+  user-select: none;
+  text-align: center;
+  line-height: 23px;
+  height: 43px;
+  flex: 1;
+  min-width: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+

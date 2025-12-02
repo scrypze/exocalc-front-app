@@ -48,13 +48,14 @@ export const StarsList = () => {
   const massRange = useMassRange();
   
   const { stars: starsFromAPI, loading, error } = useSelector((state: RootState) => state.stars);
-  const { count: selectedCount, currentDraftId } = useSelector((state: RootState) => state.selectedStars);
+  const { count: selectedCount, currentDraftId, selectedStars } = useSelector((state: RootState) => state.selectedStars);
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   
   const [localSearchQuery, setLocalSearchQuery] = useState('');
   const [localMassMin, setLocalMassMin] = useState('');
   const [localMassMax, setLocalMassMax] = useState('');
   const [filteredStars, setFilteredStars] = useState<Star[]>([]);
+  const [starsInDraft, setStarsInDraft] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     setLocalSearchQuery(searchQuery || '');
@@ -67,9 +68,33 @@ export const StarsList = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      dispatch(getSelectedStarsCount());
+      dispatch(getSelectedStarsCount()).then((result) => {
+        const countResult = result.payload as any;
+        const draftId = countResult?.selected_stars_id || currentDraftId;
+        if (draftId) {
+          dispatch(getSelectedStarsById(draftId));
+        }
+      });
     }
-  }, [isAuthenticated, dispatch]);
+  }, [isAuthenticated, dispatch, currentDraftId]);
+
+  useEffect(() => {
+    if (selectedStars && currentDraftId) {
+      const data = selectedStars as any;
+      const items = data['selected-stars-items'] || data.calculate_exoplanets || [];
+      const starIds = new Set<number>();
+      items.forEach((item: any) => {
+        const starData = item.star || item;
+        const starId = starData.id || starData.ID || 0;
+        if (starId) {
+          starIds.add(starId);
+        }
+      });
+      setStarsInDraft(starIds);
+    } else {
+      setStarsInDraft(new Set());
+    }
+  }, [selectedStars, currentDraftId]);
 
   const performSearch = (
     stars: Star[],
@@ -173,7 +198,11 @@ export const StarsList = () => {
       
       await dispatch(addStarToSelected(starId)).unwrap();
       
-      await dispatch(getSelectedStarsCount()).unwrap();
+      const countResult = await dispatch(getSelectedStarsCount()).unwrap();
+      const draftId = (countResult as any).selected_stars_id || currentDraftId;
+      if (draftId) {
+        await dispatch(getSelectedStarsById(draftId));
+      }
       
       alert('Звезда добавлена в заявку!');
     } catch (err) {
@@ -230,14 +259,15 @@ export const StarsList = () => {
                 Звёзды не найдены
               </div>
             ) : (
-              filteredStars.map((star) => (
-                <StarCard
-                  key={star.id}
-                  star={star}
-                  onAddToApplication={handleAddStar}
-                  isAuthenticated={isAuthenticated}
-                />
-              ))
+                  filteredStars.map((star) => (
+                    <StarCard
+                      key={star.id}
+                      star={star}
+                      onAddToApplication={handleAddStar}
+                      isAuthenticated={isAuthenticated}
+                      isAddedToApplication={starsInDraft.has(star.id)}
+                    />
+                  ))
             )}
           </div>
           {isAuthenticated && selectedCount > 0 && (

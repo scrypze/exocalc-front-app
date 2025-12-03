@@ -48,9 +48,9 @@ export const Header = () => {
                     </Link>
                   </>
                 )}
-                <Link to="/stars" className="header-nav-link">
-                  Звёзды
-                </Link>
+              <Link to="/stars" className="header-nav-link">
+                Звёзды
+              </Link>
                 {isAuthenticated ? (
                   <button onClick={handleLogout} className="header-nav-link" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
                     Выйти

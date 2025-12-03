@@ -260,14 +260,14 @@ export const StarsList = () => {
               </div>
             ) : (
                   filteredStars.map((star) => (
-                    <StarCard
-                      key={star.id}
-                      star={star}
+                <StarCard
+                  key={star.id}
+                  star={star}
                       onAddToSelectedStars={handleAddStar}
                       isAuthenticated={isAuthenticated}
                       isAddedToSelectedStars={starsInDraft.has(star.id)}
-                    />
-                  ))
+                />
+              ))
             )}
           </div>
           {isAuthenticated && selectedCount > 0 && (

@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import type { RootState, AppDispatch } from '../store';
-import { getAllSelectedStars, moderateSelectedStars } from '../slices/selectedStarsSlice';
+import { getAllSelectedStars } from '../slices/selectedStarsSlice';
 import { getMe } from '../slices/authSlice';
 import { Breadcrumbs } from '../components/Breadcrumbs/Breadcrumbs';
 import './SelectedStarsList.css';
@@ -55,34 +55,6 @@ export const SelectedStarsList = () => {
     declined: '#ef4444',
   };
 
-  const handleModerate = async (id: number, action: 'complete' | 'decline') => {
-    if (!window.confirm(`Вы уверены, что хотите ${action === 'complete' ? 'одобрить' : 'отклонить'} эту заявку?`)) {
-      return;
-    }
-
-    if (!user?.id) {
-      alert('Ошибка: не удалось получить ID пользователя');
-      return;
-    }
-
-    try {
-      await dispatch(moderateSelectedStars({ 
-        id, 
-        status: action === 'complete' ? 'completed' : 'declined',
-        moderatorId: user.id
-      })).unwrap();
-      await dispatch(getAllSelectedStars());
-      alert(`Заявка ${action === 'complete' ? 'одобрена' : 'отклонена'}!`);
-      
-      const currentPath = window.location.pathname;
-      if (currentPath.includes(`/application/${id}`)) {
-        window.location.reload();
-      }
-    } catch (err) {
-      console.error('Ошибка модерации заявки:', err);
-      alert('Ошибка модерации заявки');
-    }
-  };
 
   if (loading) {
     return (
@@ -158,22 +130,6 @@ export const SelectedStarsList = () => {
                           >
                             Открыть
                           </Link>
-                          {isAstronomer && selectedStar.status === 'formed' && (
-                            <>
-                              <button
-                                onClick={() => handleModerate(selectedStar.id, 'complete')}
-                                className="table-action-button table-action-button-approve"
-                              >
-                                Одобрить
-                              </button>
-                              <button
-                                onClick={() => handleModerate(selectedStar.id, 'decline')}
-                                className="table-action-button table-action-button-decline"
-                              >
-                                Отклонить
-                              </button>
-                            </>
-                          )}
                         </div>
                       </td>
                     </tr>

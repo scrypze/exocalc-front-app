@@ -13,9 +13,9 @@ import {
 import { Breadcrumbs } from '../components/Breadcrumbs/Breadcrumbs';
 import type { Star } from '../types';
 import defaultStarImage from '../assets/base.jpeg';
-import './Application.css';
+import './SelectedStars.css';
 
-export const Application = () => {
+export const SelectedStars = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
@@ -27,8 +27,8 @@ export const Application = () => {
   const [calculationDate, setCalculationDate] = useState('');
   const [comments, setComments] = useState<{ [key: number]: string }>({});
 
-  const applicationData = selectedStars as any;
-  const isDraft = (applicationData?.Status || applicationData?.status) === 'draft';
+  const selectedStarsData = selectedStars as any;
+  const isDraft = (selectedStarsData?.Status || selectedStarsData?.status) === 'draft';
   const isAstronomer = user?.role === 'astronomer';
 
   useEffect(() => {
@@ -189,7 +189,7 @@ export const Application = () => {
     );
   }
 
-  const starsItems = applicationData?.['selected-stars-items'] || applicationData?.calculate_exoplanets || [];
+  const starsItems = selectedStarsData?.['selected-stars-items'] || selectedStarsData?.calculate_exoplanets || [];
   const stars: Star[] = starsItems.map((item: any) => {
     const starData = item.star || item;
     return {
@@ -230,13 +230,13 @@ export const Application = () => {
 
   return (
     <div className="main-content">
-      <Breadcrumbs />
+      <Breadcrumbs currentLabel={`Заявка #${selectedStarsData?.ID || id}`} />
       
       <div className="application-header">
-        <h2>Заявка #{applicationData?.ID || id}</h2>
+        <h2>Заявка #{selectedStarsData?.ID || id}</h2>
         <div className="application-status">
-          Статус: <span className={`status-${applicationData?.Status}`}>
-            {statusLabels[applicationData?.Status || ''] || applicationData?.Status}
+          Статус: <span className={`status-${selectedStarsData?.Status}`}>
+            {statusLabels[selectedStarsData?.Status || ''] || selectedStarsData?.Status}
           </span>
         </div>
       </div>

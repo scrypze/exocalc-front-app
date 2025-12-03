@@ -15,7 +15,7 @@ interface SelectedStarsState {
   currentDraftId: number | null;
   count: number;
   selectedStars: SelectedStar | null;
-  allApplications: SelectedStar[];
+  allSelectedStars: SelectedStar[];
   loading: boolean;
   error: string | null;
 }
@@ -24,7 +24,7 @@ const initialState: SelectedStarsState = {
   currentDraftId: null,
   count: 0,
   selectedStars: null,
-  allApplications: [],
+      allSelectedStars: [],
   loading: false,
   error: null,
 };
@@ -315,7 +315,7 @@ const selectedStarsSlice = createSlice({
       .addCase(getAllSelectedStars.fulfilled, (state, action) => {
         state.loading = false;
         const payload = action.payload as any;
-        state.allApplications = payload['selected-stars'] || payload.selected_stars || [];
+        state.allSelectedStars = payload['selected-stars'] || payload.selected_stars || [];
       })
       .addCase(getAllSelectedStars.rejected, (state, action) => {
         state.loading = false;

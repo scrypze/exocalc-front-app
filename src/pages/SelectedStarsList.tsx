@@ -5,29 +5,27 @@ import type { RootState, AppDispatch } from '../store';
 import { getAllSelectedStars, moderateSelectedStars } from '../slices/selectedStarsSlice';
 import { getMe } from '../slices/authSlice';
 import { Breadcrumbs } from '../components/Breadcrumbs/Breadcrumbs';
-import './ApplicationsList.css';
+import './SelectedStarsList.css';
 
-export const ApplicationsList = () => {
+export const SelectedStarsList = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { allApplications, loading, error } = useSelector((state: RootState) => state.selectedStars);
+  const { allSelectedStars, loading, error } = useSelector((state: RootState) => state.selectedStars);
   const { isAuthenticated, user } = useSelector((state: RootState) => state.auth);
   
   const isAstronomer = user?.role === 'astronomer' || user?.role === 'Astronomer';
   
-  console.log('ApplicationsList - user:', user, 'isAstronomer:', isAstronomer, 'allApplications:', allApplications);
-  
-  const filteredApplications = useMemo(() => {
-    if (!allApplications || allApplications.length === 0) {
+  const filteredSelectedStars = useMemo(() => {
+    if (!allSelectedStars || allSelectedStars.length === 0) {
       return [];
     }
     
     if (isAstronomer) {
-      return allApplications;
+      return allSelectedStars;
     }
     
-    return allApplications.filter((app: any) => app.creator_login === user?.login);
-  }, [allApplications, isAstronomer, user?.login]);
+    return allSelectedStars.filter((selectedStar: any) => selectedStar.creator_login === user?.login);
+  }, [allSelectedStars, isAstronomer, user?.login]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -122,64 +120,64 @@ export const ApplicationsList = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredApplications.length === 0 ? (
-              <tr>
-                <td colSpan={6} style={{ textAlign: 'center', color: '#ffffff', padding: '20px' }}>
-                  {isAstronomer ? 'Заявок нет' : 'У вас нет заявок'}
-                </td>
-              </tr>
-            ) : (
-              filteredApplications.map((app: any) => (
-                <tr key={app.id}>
-                  <td>{app.id}</td>
-                  <td>
-                    <span 
-                      className="status-badge" 
-                      style={{ color: statusColors[app.status] || '#ffffff' }}
-                    >
-                      {statusLabels[app.status] || app.status}
-                    </span>
-                  </td>
-                  <td>{app.scientist || '-'}</td>
-                  <td>
-                    {app.formed_at
-                      ? new Date(app.formed_at).toLocaleDateString('ru-RU', {
-                          day: '2-digit',
-                          month: '2-digit',
-                          year: 'numeric'
-                        })
-                      : '-'
-                    }
-                  </td>
-                  <td>{app.items_count || 0}</td>
-                  <td>
-                    <div className="table-actions">
-                      <Link 
-                        to={`/application/${app.id}`} 
-                        className="table-link-button"
-                      >
-                        Открыть
-                      </Link>
-                      {isAstronomer && app.status === 'formed' && (
-                        <>
-                          <button
-                            onClick={() => handleModerate(app.id, 'complete')}
-                            className="table-action-button table-action-button-approve"
+            {filteredSelectedStars.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} style={{ textAlign: 'center', color: '#ffffff', padding: '20px' }}>
+                      {isAstronomer ? 'Заявок нет' : 'У вас нет заявок'}
+                    </td>
+                  </tr>
+                ) : (
+                  filteredSelectedStars.map((selectedStar: any) => (
+                    <tr key={selectedStar.id}>
+                      <td>{selectedStar.id}</td>
+                      <td>
+                        <span 
+                          className="status-badge" 
+                          style={{ color: statusColors[selectedStar.status] || '#ffffff' }}
+                        >
+                          {statusLabels[selectedStar.status] || selectedStar.status}
+                        </span>
+                      </td>
+                      <td>{selectedStar.scientist || '-'}</td>
+                      <td>
+                        {selectedStar.formed_at
+                          ? new Date(selectedStar.formed_at).toLocaleDateString('ru-RU', {
+                              day: '2-digit',
+                              month: '2-digit',
+                              year: 'numeric'
+                            })
+                          : '-'
+                        }
+                      </td>
+                      <td>{selectedStar.items_count || 0}</td>
+                      <td>
+                        <div className="table-actions">
+                          <Link 
+                            to={`/application/${selectedStar.id}`} 
+                            className="table-link-button"
                           >
-                            Одобрить
-                          </button>
-                          <button
-                            onClick={() => handleModerate(app.id, 'decline')}
-                            className="table-action-button table-action-button-decline"
-                          >
-                            Отклонить
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))
+                            Открыть
+                          </Link>
+                          {isAstronomer && selectedStar.status === 'formed' && (
+                            <>
+                              <button
+                                onClick={() => handleModerate(selectedStar.id, 'complete')}
+                                className="table-action-button table-action-button-approve"
+                              >
+                                Одобрить
+                              </button>
+                              <button
+                                onClick={() => handleModerate(selectedStar.id, 'decline')}
+                                className="table-action-button table-action-button-decline"
+                              >
+                                Отклонить
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))
             )}
           </tbody>
         </table>

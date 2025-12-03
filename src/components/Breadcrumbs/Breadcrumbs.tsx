@@ -37,6 +37,19 @@ export const Breadcrumbs = ({ currentLabel }: BreadcrumbsProps) => {
           label: label,
         });
         return;
+      } else if (segment === 'application' && pathSegments[index + 1]) {
+        breadcrumbs.push({
+          path: '/applications',
+          label: 'Заявки',
+        });
+        label = currentLabel || `Заявка #${pathSegments[index + 1]}`;
+        breadcrumbs.push({
+          path: currentPath,
+          label: label,
+        });
+        return;
+      } else if (segment === 'applications') {
+        label = 'Заявки';
       } else if (!isNaN(Number(segment))) {
         return;
       }

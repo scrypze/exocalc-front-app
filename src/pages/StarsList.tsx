@@ -211,7 +211,7 @@ export const StarsList = () => {
     }
   };
 
-  const handleGoToApplication = async () => {
+  const handleGoToSelectedStars = async () => {
     console.log('Клик по корзине, currentDraftId:', currentDraftId, 'selectedCount:', selectedCount);
     
     try {
@@ -263,9 +263,9 @@ export const StarsList = () => {
                     <StarCard
                       key={star.id}
                       star={star}
-                      onAddToApplication={handleAddStar}
+                      onAddToSelectedStars={handleAddStar}
                       isAuthenticated={isAuthenticated}
-                      isAddedToApplication={starsInDraft.has(star.id)}
+                      isAddedToSelectedStars={starsInDraft.has(star.id)}
                     />
                   ))
             )}
@@ -273,7 +273,7 @@ export const StarsList = () => {
           {isAuthenticated && selectedCount > 0 && (
             <div 
               className="selected-stars-fab" 
-              onClick={handleGoToApplication} 
+              onClick={handleGoToSelectedStars} 
               style={{ 
                 cursor: 'pointer',
                 pointerEvents: 'auto',

@@ -5,20 +5,20 @@ import './StarCard.css';
 
 interface StarCardProps {
   star: Star;
-  onAddToApplication?: (starId: number) => void;
-  onRemoveFromApplication?: (starId: number) => void;
+  onAddToSelectedStars?: (starId: number) => void;
+  onRemoveFromSelectedStars?: (starId: number) => void;
   isAuthenticated?: boolean;
   showRemoveButton?: boolean;
-  isAddedToApplication?: boolean;
+  isAddedToSelectedStars?: boolean;
 }
 
 export const StarCard = ({ 
   star, 
-  onAddToApplication, 
-  onRemoveFromApplication, 
+  onAddToSelectedStars, 
+  onRemoveFromSelectedStars, 
   isAuthenticated = false,
   showRemoveButton = false,
-  isAddedToApplication = false
+  isAddedToSelectedStars = false
 }: StarCardProps) => {
   const imageSrc = star.imagePath && star.imagePath.trim() !== '' 
     ? star.imagePath 
@@ -36,20 +36,20 @@ export const StarCard = ({
         <Link to={`/star/${star.id}`} className="details-button">
           Подробнее
         </Link>
-          {isAuthenticated && onAddToApplication && !showRemoveButton && !isAddedToApplication && (
+          {isAuthenticated && onAddToSelectedStars && !showRemoveButton && !isAddedToSelectedStars && (
             <button
-              onClick={() => onAddToApplication(star.id)}
+              onClick={() => onAddToSelectedStars(star.id)}
               className="add-to-application-button"
             >
               В заявку
             </button>
           )}
-          {isAuthenticated && isAddedToApplication && !showRemoveButton && (
+          {isAuthenticated && isAddedToSelectedStars && !showRemoveButton && (
             <span className="star-added-indicator">В заявке</span>
           )}
-          {showRemoveButton && onRemoveFromApplication && (
+          {showRemoveButton && onRemoveFromSelectedStars && (
             <button
-              onClick={() => onRemoveFromApplication(star.id)}
+              onClick={() => onRemoveFromSelectedStars(star.id)}
               className="remove-from-application-button"
             >
               Удалить

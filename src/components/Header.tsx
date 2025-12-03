@@ -36,13 +36,17 @@ export const Header = () => {
             <Link to="/">
               <img src={logoImage} alt="home" />
             </Link>
-            <h1>Экзопланетный калькулятор</h1>
             {!isMobile ? (
               <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
                 {isAuthenticated && (
-                  <Link to="/applications" className="header-nav-link">
-                    Заявки
-                  </Link>
+                  <>
+                    <Link to="/personal-cabinet" className="header-nav-link">
+                      Личный кабинет
+                    </Link>
+                    <Link to="/applications" className="header-nav-link">
+                      Заявки
+                    </Link>
+                  </>
                 )}
                 <Link to="/stars" className="header-nav-link">
                   Звёзды
@@ -68,9 +72,14 @@ export const Header = () => {
                   onClick={(event) => event.stopPropagation()}
                 >
                   {isAuthenticated && (
-                    <Link to="/applications" className="nav-link-mobile">
-                      Заявки
-                    </Link>
+                    <>
+                      <Link to="/personal-cabinet" className="nav-link-mobile">
+                        Личный кабинет
+                      </Link>
+                      <Link to="/applications" className="nav-link-mobile">
+                        Заявки
+                      </Link>
+                    </>
                   )}
                   <Link to="/stars" className="nav-link-mobile">
                     Звёзды

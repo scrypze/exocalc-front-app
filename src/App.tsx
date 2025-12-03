@@ -6,6 +6,7 @@ import { StarDetail } from './pages/StarDetail';
 import { Login } from './pages/Login';
 import { SelectedStars } from './pages/SelectedStars';
 import { SelectedStarsList } from './pages/SelectedStarsList';
+import { PersonalCabinet } from './pages/PersonalCabinet';
 import './App.css';
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/application/:id" element={<SelectedStars />} />
         <Route path="/applications" element={<SelectedStarsList />} />
+        <Route path="/personal-cabinet" element={<PersonalCabinet />} />
       </Routes>
     </Router>
   );

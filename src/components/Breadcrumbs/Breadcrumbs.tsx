@@ -50,6 +50,8 @@ export const Breadcrumbs = ({ currentLabel }: BreadcrumbsProps) => {
         return;
       } else if (segment === 'applications') {
         label = 'Заявки';
+      } else if (segment === 'personal-cabinet') {
+        label = 'Личный кабинет';
       } else if (!isNaN(Number(segment))) {
         return;
       }

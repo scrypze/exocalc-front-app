@@ -163,6 +163,24 @@ export const SelectedStars = () => {
     }
   };
 
+  const handleSaveComment = async (starId: number) => {
+    if (!id) return;
+    try {
+      await dispatch(
+        updateStarComment({
+          selectedStarsId: Number(id),
+          starId,
+          comment: comments[starId] || '',
+        })
+      ).unwrap();
+      await dispatch(getSelectedStarsById(Number(id)));
+      setLocalMessage({ type: 'success', text: 'Комментарий сохранён' });
+    } catch (err) {
+      console.error('Ошибка сохранения комментария:', err);
+      setLocalMessage({ type: 'error', text: 'Не удалось сохранить комментарий' });
+    }
+  };
+
   const handleCommentChange = (starId: number, comment: string) => {
     setComments(prev => ({ ...prev, [starId]: comment }));
   };
@@ -387,6 +405,15 @@ export const SelectedStars = () => {
                 placeholder="Комментарий"
                 disabled={!isDraft && !isAstronomer}
               />
+              {(isDraft || isAstronomer) && (
+                <button
+                  onClick={() => handleSaveComment(star.id)}
+                  className="btn btn-primary"
+                  style={{ marginTop: '8px' }}
+                >
+                  Сохранить комментарий
+                </button>
+              )}
             </div>
           ))
         )}

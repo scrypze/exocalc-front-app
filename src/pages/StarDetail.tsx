@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import type { Star } from '../types';
 import { starsService } from '../modules/stars/starsService';
 import { Breadcrumbs } from '../components/Breadcrumbs/Breadcrumbs';
@@ -8,8 +8,6 @@ import './StarDetail.css';
 
 export const StarDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-  
   const [star, setStar] = useState<Star | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -57,10 +55,6 @@ export const StarDetail = () => {
       </div>
     );
   }
-
-  const handleBack = () => {
-    navigate('/stars');
-  };
 
   return (
     <div className="main-content">
@@ -111,10 +105,6 @@ export const StarDetail = () => {
         </div>
       </div>
 
-      <button onClick={handleBack} className="back-button">
-        <span className="back-arrow">‹‹</span>
-        Назад
-      </button>
     </div>
   );
 };

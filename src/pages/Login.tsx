@@ -14,6 +14,7 @@ export const Login = () => {
   const [isAstronomerMode, setIsAstronomerMode] = useState(false);
   const [loginValue, setLoginValue] = useState('');
   const [password, setPassword] = useState('');
+  const [statusMessage, setStatusMessage] = useState<string>('');
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -46,13 +47,13 @@ export const Login = () => {
       } else {
         if (isAstronomerMode) {
           await dispatch(registerAstronomer(credentials)).unwrap();
-          alert('Регистрация астронома прошла успешно! Теперь вы можете войти.');
+          setStatusMessage('Регистрация астронома прошла успешно! Теперь вы можете войти.');
           setIsLoginMode(true);
           setLoginValue('');
           setPassword('');
         } else {
           await dispatch(register(credentials)).unwrap();
-          alert('Регистрация прошла успешно! Теперь вы можете войти.');
+          setStatusMessage('Регистрация прошла успешно! Теперь вы можете войти.');
           setIsLoginMode(true);
           setLoginValue('');
           setPassword('');
@@ -73,6 +74,11 @@ export const Login = () => {
             {error}
           </div>
         )}
+      {statusMessage && (
+        <div className="success-message">
+          {statusMessage}
+        </div>
+      )}
 
         <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">

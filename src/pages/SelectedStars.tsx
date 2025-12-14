@@ -26,6 +26,7 @@ export const SelectedStars = () => {
   const [scientistName, setScientistName] = useState('');
   const [calculationDate, setCalculationDate] = useState('');
   const [comments, setComments] = useState<{ [key: number]: string }>({});
+  const [localMessage, setLocalMessage] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
 
   const selectedStarsData = selectedStars as any;
   const isDraft = (selectedStarsData?.Status || selectedStarsData?.status) === 'draft';
@@ -97,9 +98,10 @@ export const SelectedStars = () => {
       await Promise.all(saveCommentPromises);
 
       dispatch(getSelectedStarsById(Number(id)));
+      setLocalMessage({ type: 'success', text: 'Заявка сохранена' });
     } catch (err) {
       console.error('Ошибка сохранения заявки:', err);
-      alert('Ошибка сохранения заявки');
+      setLocalMessage({ type: 'error', text: 'Ошибка сохранения заявки' });
     }
   };
 
@@ -107,7 +109,7 @@ export const SelectedStars = () => {
     if (!id) return;
 
     if (!scientistName || !calculationDate) {
-      alert('Заполните имя ученого и дату расчета перед формированием заявки');
+      setLocalMessage({ type: 'info', text: 'Укажите имя ученого и дату расчета' });
       return;
     }
 
@@ -123,12 +125,12 @@ export const SelectedStars = () => {
       ).unwrap();
 
       await dispatch(formSelectedStars(Number(id))).unwrap();
-      alert('Заявка сформирована!');
+      setLocalMessage({ type: 'success', text: 'Заявка сформирована' });
       
       dispatch(getSelectedStarsById(Number(id)));
     } catch (err) {
       console.error('Ошибка формирования заявки:', err);
-      alert('Ошибка формирования заявки');
+      setLocalMessage({ type: 'error', text: 'Ошибка формирования заявки' });
     }
   };
 
@@ -141,11 +143,11 @@ export const SelectedStars = () => {
 
     try {
       await dispatch(deleteSelectedStars(Number(id))).unwrap();
-      alert('Заявка удалена!');
+      setLocalMessage({ type: 'success', text: 'Заявка удалена' });
       navigate('/stars');
     } catch (err) {
       console.error('Ошибка удаления заявки:', err);
-      alert('Ошибка удаления заявки');
+      setLocalMessage({ type: 'error', text: 'Ошибка удаления заявки' });
     }
   };
 
@@ -157,7 +159,7 @@ export const SelectedStars = () => {
       }
     } catch (err) {
       console.error('Ошибка удаления звезды:', err);
-      alert('Ошибка удаления звезды из заявки');
+      setLocalMessage({ type: 'error', text: 'Ошибка удаления звезды из заявки' });
     }
   };
 
@@ -231,6 +233,17 @@ export const SelectedStars = () => {
   return (
     <div className="main-content">
       <Breadcrumbs currentLabel={`Заявка #${selectedStarsData?.ID || id}`} />
+      {localMessage && (
+        <div
+          style={{
+            textAlign: 'center',
+            color: localMessage.type === 'success' ? '#10b981' : localMessage.type === 'error' ? '#ff6b6b' : '#60a5fa',
+            padding: '12px'
+          }}
+        >
+          {localMessage.text}
+        </div>
+      )}
       
       <div className="application-header">
         <h2>Заявка #{selectedStarsData?.ID || id}</h2>

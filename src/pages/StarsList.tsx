@@ -56,6 +56,7 @@ export const StarsList = () => {
   const [localMassMax, setLocalMassMax] = useState('');
   const [filteredStars, setFilteredStars] = useState<Star[]>([]);
   const [starsInDraft, setStarsInDraft] = useState<Set<number>>(new Set());
+  const [localMessage, setLocalMessage] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
 
   useEffect(() => {
     setLocalSearchQuery(searchQuery || '');
@@ -185,7 +186,7 @@ export const StarsList = () => {
 
   const handleAddStar = async (starId: number) => {
     if (!isAuthenticated) {
-      alert('Для добавления звезды в заявку необходимо авторизоваться');
+      setLocalMessage({ type: 'info', text: 'Авторизуйтесь, чтобы добавить звезду в заявку' });
       navigate('/login');
       return;
     }
@@ -204,10 +205,10 @@ export const StarsList = () => {
         await dispatch(getSelectedStarsById(draftId));
       }
       
-      alert('Звезда добавлена в заявку!');
+      setLocalMessage({ type: 'success', text: 'Звезда добавлена в заявку' });
     } catch (err) {
       console.error('Ошибка добавления звезды:', err);
-      alert('Ошибка добавления звезды в заявку');
+      setLocalMessage({ type: 'error', text: 'Ошибка добавления звезды в заявку' });
     }
   };
 
@@ -227,11 +228,11 @@ export const StarsList = () => {
         navigate(`/selected-stars/${draftId}`);
       } else {
         console.warn('currentDraftId не установлен, невозможно перейти к заявке');
-        alert('Заявка не найдена. Создайте новую заявку, добавив звезду.');
+        setLocalMessage({ type: 'error', text: 'Заявка не найдена. Добавьте звезду, чтобы создать новую' });
       }
     } catch (err) {
       console.error('Ошибка загрузки заявки:', err);
-      alert('Не удалось загрузить заявку');
+      setLocalMessage({ type: 'error', text: 'Не удалось загрузить заявку' });
     }
   };
 
@@ -250,6 +251,17 @@ export const StarsList = () => {
 
       {loading && <div style={{ textAlign: 'center', color: '#ffffff', padding: '20px' }}>Загрузка...</div>}
       {error && <div style={{ textAlign: 'center', color: '#ff6b6b', padding: '20px' }}>{error}</div>}
+      {localMessage && (
+        <div
+          style={{
+            textAlign: 'center',
+            color: localMessage.type === 'success' ? '#10b981' : localMessage.type === 'error' ? '#ff6b6b' : '#60a5fa',
+            padding: '12px'
+          }}
+        >
+          {localMessage.text}
+        </div>
+      )}
       
       {!loading && !error && (
         <>

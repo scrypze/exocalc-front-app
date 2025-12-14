@@ -35,6 +35,16 @@
   text-align: center;
 }
 
+.success-message {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid #10b981;
+  color: #10b981;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
 .login-form {
   display: flex;
   flex-direction: column;

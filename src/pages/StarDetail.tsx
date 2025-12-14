@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from '../store';
 import { getStarById } from '../slices/starsSlice';
@@ -9,7 +9,6 @@ import './StarDetail.css';
 
 export const StarDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   
   const { selectedStar, loading, error } = useSelector((state: RootState) => state.stars);
@@ -43,10 +42,6 @@ export const StarDetail = () => {
   if (!selectedStar) {
     return null;
   }
-
-  const handleBack = () => {
-    navigate('/stars');
-  };
 
   const star = {
     title: selectedStar.title || '',
@@ -110,10 +105,6 @@ export const StarDetail = () => {
         </div>
       </div>
 
-      <button onClick={handleBack} className="back-button">
-        <span className="back-arrow">‹‹</span>
-        Назад
-      </button>
     </div>
   );
 };

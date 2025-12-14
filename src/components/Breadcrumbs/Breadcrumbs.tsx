@@ -37,9 +37,9 @@ export const Breadcrumbs = ({ currentLabel }: BreadcrumbsProps) => {
           label: label,
         });
         return;
-      } else if (segment === 'application' && pathSegments[index + 1]) {
+      } else if (segment === 'selected-stars' && pathSegments[index + 1]) {
         breadcrumbs.push({
-          path: '/applications',
+          path: '/selected-stars',
           label: 'Заявки',
         });
         label = currentLabel || `Заявка #${pathSegments[index + 1]}`;
@@ -48,7 +48,7 @@ export const Breadcrumbs = ({ currentLabel }: BreadcrumbsProps) => {
           label: label,
         });
         return;
-      } else if (segment === 'applications') {
+      } else if (segment === 'selected-stars') {
         label = 'Заявки';
       } else if (segment === 'personal-cabinet') {
         label = 'Личный кабинет';

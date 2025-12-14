@@ -43,7 +43,7 @@ export const Header = () => {
                     <Link to="/personal-cabinet" className="header-nav-link">
                       Личный кабинет
                     </Link>
-                    <Link to="/applications" className="header-nav-link">
+                    <Link to="/selected-stars" className="header-nav-link">
                       Заявки
                     </Link>
                   </>
@@ -76,7 +76,7 @@ export const Header = () => {
                       <Link to="/personal-cabinet" className="nav-link-mobile">
                         Личный кабинет
                       </Link>
-                      <Link to="/applications" className="nav-link-mobile">
+                      <Link to="/selected-stars" className="nav-link-mobile">
                         Заявки
                       </Link>
                     </>

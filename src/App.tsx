@@ -18,8 +18,8 @@ function App() {
         <Route path="/stars" element={<StarsList />} />
         <Route path="/star/:id" element={<StarDetail />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/application/:id" element={<SelectedStars />} />
-        <Route path="/applications" element={<SelectedStarsList />} />
+        <Route path="/selected-stars/:id" element={<SelectedStars />} />
+        <Route path="/selected-stars" element={<SelectedStarsList />} />
         <Route path="/personal-cabinet" element={<PersonalCabinet />} />
       </Routes>
     </Router>

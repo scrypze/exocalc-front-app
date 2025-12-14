@@ -224,7 +224,7 @@ export const StarsList = () => {
       
       if (draftId) {
         await dispatch(getSelectedStarsById(draftId)).unwrap();
-        navigate(`/application/${draftId}`);
+        navigate(`/selected-stars/${draftId}`);
       } else {
         console.warn('currentDraftId не установлен, невозможно перейти к заявке');
         alert('Заявка не найдена. Создайте новую заявку, добавив звезду.');

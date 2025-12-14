@@ -125,7 +125,7 @@ export const SelectedStarsList = () => {
                       <td>
                         <div className="table-actions">
                           <Link 
-                            to={`/application/${selectedStar.id}`} 
+                            to={`/selected-stars/${selectedStar.id}`} 
                             className="table-link-button"
                           >
                             Открыть

@@ -263,16 +263,16 @@ export const SelectedStars = () => {
         </div>
       )}
       
-      <div className="application-header">
+      <div className="selected-stars-header">
         <h2>Заявка #{selectedStarsData?.ID || id}</h2>
-        <div className="application-status">
+        <div className="selected-stars-status">
           Статус: <span className={`status-${selectedStarsData?.Status}`}>
             {statusLabels[selectedStarsData?.Status || ''] || selectedStarsData?.Status}
           </span>
         </div>
       </div>
 
-      <div className="application-form">
+      <div className="selected-stars-form">
         <div className="form-group">
           <label htmlFor="scientist_name">Имя ученого:</label>
           {isDraft ? (
@@ -320,100 +320,86 @@ export const SelectedStars = () => {
 
       <h3 style={{ color: '#ffffff', marginTop: '30px' }}>Звезды в заявке ({stars.length})</h3>
       
-      <div className="application-stars-list">
+      <div className="selected-stars-list">
         {stars.length === 0 ? (
           <div style={{ textAlign: 'center', color: '#ffffff', padding: '20px' }}>
             В заявке нет звезд
           </div>
         ) : (
           stars.map((star) => (
-            <div key={star.id} className="application-star-card">
-              <div className="application-star-card-main">
-                <div className="application-star-image">
+            <div key={star.id} className="selected-stars-card">
+              <div className="selected-stars-card-main">
+                <div className="selected-stars-image">
                   <img 
                     src={star.imagePath || defaultStarImage} 
                     alt={star.title}
                   />
                 </div>
                 
-                <div className="application-star-content">
-                  <h3 className="application-star-title">{star.title}</h3>
-                  <div className="application-star-buttons">
-                    <Link to={`/star/${star.id}`} className="application-details-button">
-                      Подробнее
-                    </Link>
-                    {isDraft && (
-                      <button
-                        onClick={() => handleRemoveStar(star.id)}
-                        className="application-remove-button"
-                      >
-                        Удалить
-                      </button>
-                    )}
-                  </div>
-                </div>
-                
-                <div className="application-star-info-panel">
-                  <div className="application-info-item">
-                    <span className="application-info-label">Учёный:</span>
-                    <span className="application-info-value">{scientistName || '-'}</span>
-                  </div>
-                  <div className="application-info-item">
-                    <span className="application-info-label">Дата расчётов:</span>
-                    <span className="application-info-value">
-                      {calculationDate ? new Date(calculationDate + 'T00:00:00').toLocaleDateString('ru-RU', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: 'numeric'
-                      }) : '-'}
-                    </span>
-                  </div>
-                  <div className="application-info-item">
-                    <span className="application-info-label">Вероятное число планет:</span>
-                    <span className="application-info-value">
-                      {(() => {
-                        const calcData = getStarCalculationData(star.id);
-                        return calcData.probableNumberOfPlanets !== null && calcData.probableNumberOfPlanets !== undefined
-                          ? calcData.probableNumberOfPlanets
-                          : '-';
-                      })()}
-                    </span>
-                  </div>
-                  <div className="application-info-item">
-                    <span className="application-info-label">Обитаемая зона:</span>
-                    <span className="application-info-value">
-                      {(() => {
-                        const calcData = getStarCalculationData(star.id);
-                        return calcData.habitableZone || '-';
-                      })()}
-                    </span>
-                  </div>
-                  <div className="application-info-item">
-                    <span className="application-info-label">Комментарий:</span>
-                    <span className="application-info-value">{comments[star.id] || '-'}</span>
+                <div className="selected-stars-content">
+                  <div className="selected-stars-top">
+                    <div className="selected-stars-title-block">
+                      <h3 className="selected-stars-title">{star.title}</h3>
+                      <div className="selected-stars-buttons">
+                        <Link to={`/star/${star.id}`} className="selected-stars-details-button">
+                          Подробнее
+                        </Link>
+                        {isDraft && (
+                          <button
+                            onClick={() => handleRemoveStar(star.id)}
+                            className="selected-stars-remove-button"
+                          >
+                            Удалить
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                    <div className="selected-stars-meta-row">
+                      <div className="selected-stars-info-item">
+                        <span className="selected-stars-info-label">Вероятное число планет</span>
+                        <span className="selected-stars-info-value">
+                          {(() => {
+                            const calcData = getStarCalculationData(star.id);
+                            return calcData.probableNumberOfPlanets ?? '-';
+                          })()}
+                        </span>
+                      </div>
+                      <div className="selected-stars-info-item">
+                        <span className="selected-stars-info-label">Обитаемая зона</span>
+                        <span className="selected-stars-info-value">
+                          {(() => {
+                            const calcData = getStarCalculationData(star.id);
+                            return calcData.habitableZone || '-';
+                          })()}
+                        </span>
+                      </div>
+                      <div className="selected-stars-info-item">
+                        <span className="selected-stars-info-label">Комментарий</span>
+                        <div className="selected-stars-comment-actions">
+                          <input
+                            type="text"
+                            id={`selected-stars-comment-${star.id}`}
+                            className="selected-stars-comment-input"
+                            value={comments[star.id] ?? ''}
+                            onChange={(e) => handleCommentChange(star.id, e.target.value)}
+                            placeholder="Комментарий"
+                            disabled={!isDraft && !isAstronomer}
+                          />
+                          {(isDraft || isAstronomer) && (
+                            <button
+                              onClick={() => handleSaveComment(star.id)}
+                              className="btn btn-primary selected-stars-comment-save"
+                            >
+                              Сохранить
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
               
-              {/* Поле ввода комментария */}
-              <input
-                type="text"
-                id={`application-comment-${star.id}`}
-                className="application-comment-input"
-                value={comments[star.id] ?? ''}
-                onChange={(e) => handleCommentChange(star.id, e.target.value)}
-                placeholder="Комментарий"
-                disabled={!isDraft && !isAstronomer}
-              />
-              {(isDraft || isAstronomer) && (
-                <button
-                  onClick={() => handleSaveComment(star.id)}
-                  className="btn btn-primary"
-                  style={{ marginTop: '8px' }}
-                >
-                  Сохранить комментарий
-                </button>
-              )}
             </div>
           ))
         )}

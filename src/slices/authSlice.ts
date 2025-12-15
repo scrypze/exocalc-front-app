@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { api } from '../api';
+import { api, setAccessToken } from '../api';
 import type { ModelLoginReq, ModelRegisterReq } from '../api/Api';
 
 interface AuthState {
@@ -14,10 +14,15 @@ interface AuthState {
   error: string | null;
 }
 
+const initialToken =
+  typeof window !== 'undefined' ? sessionStorage.getItem('access_token') : null;
+
+setAccessToken(initialToken);
+
 const initialState: AuthState = {
-  isAuthenticated: !!localStorage.getItem('access_token'),
+  isAuthenticated: !!initialToken,
   user: null,
-  accessToken: localStorage.getItem('access_token'),
+  accessToken: initialToken,
   loading: false,
   error: null,
 };
@@ -27,12 +32,6 @@ export const login = createAsyncThunk(
   async (credentials: ModelLoginReq, { rejectWithValue }) => {
     try {
       const response = await api.auth.loginCreate(credentials);
-      const { access_token } = response.data;
-      
-      if (access_token) {
-        localStorage.setItem('access_token', access_token);
-      }
-      
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.description || 'Ошибка авторизации');
@@ -81,10 +80,8 @@ export const logout = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       await api.auth.logoutCreate();
-      localStorage.removeItem('access_token');
       return null;
     } catch (error: any) {
-      localStorage.removeItem('access_token');
       return rejectWithValue(error.response?.data?.description || 'Ошибка при выходе');
     }
   }
@@ -132,11 +129,6 @@ const authSlice = createSlice({
     setToken(state, action) {
       state.accessToken = action.payload;
       state.isAuthenticated = !!action.payload;
-      if (action.payload) {
-        localStorage.setItem('access_token', action.payload);
-      } else {
-        localStorage.removeItem('access_token');
-      }
     },
   },
   extraReducers: (builder) => {
@@ -147,8 +139,11 @@ const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
-        state.isAuthenticated = true;
-        state.accessToken = action.payload.access_token || null;
+        const payload = action.payload as any;
+        const token = payload.access_token || null;
+        state.accessToken = token;
+        state.isAuthenticated = !!token;
+        setAccessToken(token);
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
@@ -197,7 +192,6 @@ const authSlice = createSlice({
         state.error = action.payload as string;
         state.isAuthenticated = false;
         state.accessToken = null;
-        localStorage.removeItem('access_token');
       })
       .addCase(logout.pending, (state) => {
         state.loading = true;
@@ -207,12 +201,14 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.user = null;
         state.accessToken = null;
+        setAccessToken(null);
       })
       .addCase(logout.rejected, (state) => {
         state.loading = false;
         state.isAuthenticated = false;
         state.user = null;
         state.accessToken = null;
+        setAccessToken(null);
       })
       .addCase(updateLogin.pending, (state) => {
         state.loading = true;

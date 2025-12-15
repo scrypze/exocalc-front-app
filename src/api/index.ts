@@ -1,5 +1,7 @@
 import { Api } from './Api';
 
+const TOKEN_KEY = 'access_token';
+
 // Используем прокси в dev режиме, прямой адрес в production
 const getBaseURL = () => {
   if (import.meta.env.MODE === 'development') {
@@ -13,30 +15,29 @@ const getBaseURL = () => {
   return `${protocol}://${host}:${port}/api`;
 };
 
+let accessToken: string | null =
+  typeof window !== 'undefined' ? sessionStorage.getItem(TOKEN_KEY) : null;
+
+export const setAccessToken = (token: string | null) => {
+  accessToken = token;
+  if (typeof window === 'undefined') return;
+  if (token) {
+    sessionStorage.setItem(TOKEN_KEY, token);
+  } else {
+    sessionStorage.removeItem(TOKEN_KEY);
+  }
+};
+
 export const api = new Api({
-    baseURL: getBaseURL(),
+  baseURL: getBaseURL(),
 });
 
 api.instance.interceptors.request.use(
-    (config) => {
-        const token = localStorage.getItem('access_token');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-    },
-    (error) => {
-        return Promise.reject(error);
+  (config) => {
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
     }
+    return config;
+  },
+  (error) => Promise.reject(error)
 );
-
-api.instance.interceptors.response.use(
-    (response) => response,
-    (error) => {
-        if (error.response?.status === 401) {
-            localStorage.removeItem('access_token');
-        }
-        return Promise.reject(error);
-    }
-);
-

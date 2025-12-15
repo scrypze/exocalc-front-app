@@ -193,7 +193,7 @@ export const SelectedStarsList = () => {
           <div className="selected-stars-header-scientist">Учёный</div>
           <div className="selected-stars-header-formed">Дата формирования</div>
           <div className="selected-stars-header-date">Дата расчёта</div>
-          <div className="selected-stars-header-count">Количество результатов</div>
+          <div className="selected-stars-header-count">Рассчитано результатов</div>
           <div className="selected-stars-header-actions">Действия</div>
         </div>
       )}
@@ -247,7 +247,9 @@ export const SelectedStarsList = () => {
                 </div>
                 <div className="selected-stars-card-meta-item">
                   <span className="selected-stars-card-value">
-                    {selectedStar.status === 'completed' ? selectedStar.items_count || 0 : 0}
+                    {selectedStar.calculated_count !== undefined 
+                      ? `${selectedStar.calculated_count}${selectedStar.items_count ? ` / ${selectedStar.items_count}` : ''}`
+                      : selectedStar.items_count || 0}
                   </span>
                 </div>
                 <div className="selected-stars-card-meta-item selected-stars-card-actions">

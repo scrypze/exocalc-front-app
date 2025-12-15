@@ -79,65 +79,67 @@ export const SelectedStarsList = () => {
       <Breadcrumbs />
       <h1 className="page-title">{isAstronomer ? 'Все заявки' : 'Мои заявки'}</h1>
 
-      <div className="applications-table-container">
-        <table className="applications-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Статус</th>
-              <th>Учёный</th>
-              <th>Дата формирования</th>
-              <th>Количество звёзд</th>
-              <th>Действия</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredSelectedStars.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} style={{ textAlign: 'center', color: '#ffffff', padding: '20px' }}>
-                      {isAstronomer ? 'Заявок нет' : 'У вас нет заявок'}
-                    </td>
-                  </tr>
-                ) : (
-                  filteredSelectedStars.map((selectedStar: any) => (
-                    <tr key={selectedStar.id}>
-                      <td>{selectedStar.id}</td>
-                      <td>
-                        <span 
-                          className="status-badge" 
-                          style={{ color: statusColors[selectedStar.status] || '#ffffff' }}
-                        >
-                          {statusLabels[selectedStar.status] || selectedStar.status}
-                        </span>
-                      </td>
-                      <td>{selectedStar.scientist || '-'}</td>
-                      <td>
-                        {selectedStar.formed_at
-                          ? new Date(selectedStar.formed_at).toLocaleDateString('ru-RU', {
-                              day: '2-digit',
-                              month: '2-digit',
-                              year: 'numeric'
-                            })
-                          : '-'
-                        }
-                      </td>
-                      <td>{selectedStar.items_count || 0}</td>
-                      <td>
-                        <div className="table-actions">
-                          <Link 
-                            to={`/selected-stars/${selectedStar.id}`} 
-                            className="table-link-button"
-                          >
-                            Открыть
-                          </Link>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-            )}
-          </tbody>
-        </table>
-      </div>
+      {filteredSelectedStars.length > 0 && (
+        <div className="selected-stars-cards-header">
+          <div className="selected-stars-header-id">ID</div>
+          <div className="selected-stars-header-status">Статус</div>
+          <div className="selected-stars-header-scientist">Учёный</div>
+          <div className="selected-stars-header-date">Дата расчётов</div>
+          <div className="selected-stars-header-count">Количество звёзд</div>
+          <div className="selected-stars-header-actions">Действия</div>
+        </div>
+      )}
+
+      {filteredSelectedStars.length === 0 ? (
+        <div style={{ textAlign: 'center', color: '#ffffff', padding: '20px' }}>
+          {isAstronomer ? 'Заявок нет' : 'У вас нет заявок'}
+        </div>
+      ) : (
+        <div className="selected-stars-cards-list">
+          {filteredSelectedStars.map((selectedStar: any) => (
+            <div key={selectedStar.id} className="selected-stars-card-item">
+              <div className="selected-stars-card-meta-row">
+                <div className="selected-stars-card-meta-item">
+                  <span className="selected-stars-card-value">{selectedStar.id}</span>
+                </div>
+                <div className="selected-stars-card-meta-item">
+                  <span
+                    className="selected-stars-card-status"
+                    style={{ color: statusColors[selectedStar.status] || '#ffffff' }}
+                  >
+                    {statusLabels[selectedStar.status] || selectedStar.status}
+                  </span>
+                </div>
+                <div className="selected-stars-card-meta-item">
+                  <span className="selected-stars-card-value">{selectedStar.scientist || '-'}</span>
+                </div>
+                <div className="selected-stars-card-meta-item">
+                  <span className="selected-stars-card-value">
+                    {selectedStar.date || selectedStar.Date
+                      ? new Date(selectedStar.date || selectedStar.Date).toLocaleDateString('ru-RU', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                        })
+                      : '-'}
+                  </span>
+                </div>
+                <div className="selected-stars-card-meta-item">
+                  <span className="selected-stars-card-value">{selectedStar.items_count || 0}</span>
+                </div>
+                <div className="selected-stars-card-meta-item selected-stars-card-actions">
+                  <Link
+                    to={`/selected-stars/${selectedStar.id}`}
+                    className="selected-stars-card-link"
+                  >
+                    Открыть
+                  </Link>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

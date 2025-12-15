@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import type { RootState, AppDispatch } from '../store';
@@ -12,6 +12,9 @@ export const SelectedStarsList = () => {
   const navigate = useNavigate();
   const { allSelectedStars, loading, error } = useSelector((state: RootState) => state.selectedStars);
   const { isAuthenticated, user } = useSelector((state: RootState) => state.auth);
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
   
   const isAstronomer = user?.role === 'astronomer' || user?.role === 'Astronomer';
   
@@ -40,6 +43,29 @@ export const SelectedStarsList = () => {
       dispatch(getAllSelectedStars());
     }
   }, [dispatch, navigate, isAuthenticated, user]);
+
+  const handleApplyFilters = () => {
+    const filters: { date_from?: string; date_to?: string; status?: string } = {};
+
+    if (dateFrom) {
+      filters.date_from = dateFrom;
+    }
+    if (dateTo) {
+      filters.date_to = dateTo;
+    }
+    if (statusFilter) {
+      filters.status = statusFilter;
+    }
+
+    dispatch(getAllSelectedStars(filters));
+  };
+
+  const handleResetFilters = () => {
+    setDateFrom('');
+    setDateTo('');
+    setStatusFilter('');
+    dispatch(getAllSelectedStars());
+  };
 
   const statusLabels: { [key: string]: string } = {
     draft: 'Черновик',
@@ -78,6 +104,67 @@ export const SelectedStarsList = () => {
     <div className="main-content">
       <Breadcrumbs />
       <h1 className="page-title">{isAstronomer ? 'Все заявки' : 'Мои заявки'}</h1>
+
+      <div className="selected-stars-filters">
+        <div className="selected-stars-filters-row">
+          <div className="selected-stars-filter-field">
+            <label htmlFor="date-from" className="selected-stars-filter-label">
+              Дата формирования от
+            </label>
+            <input
+              id="date-from"
+              type="date"
+              className="selected-stars-filter-input"
+              value={dateFrom}
+              onChange={(e) => setDateFrom(e.target.value)}
+            />
+          </div>
+          <div className="selected-stars-filter-field">
+            <label htmlFor="date-to" className="selected-stars-filter-label">
+              Дата формирования до
+            </label>
+            <input
+              id="date-to"
+              type="date"
+              className="selected-stars-filter-input"
+              value={dateTo}
+              onChange={(e) => setDateTo(e.target.value)}
+            />
+          </div>
+          <div className="selected-stars-filter-field">
+            <label htmlFor="status" className="selected-stars-filter-label">
+              Статус
+            </label>
+            <select
+              id="status"
+              className="selected-stars-filter-input"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <option value="">Все</option>
+              <option value="formed">Сформирован</option>
+              <option value="completed">Завершен</option>
+              <option value="declined">Отклонен</option>
+            </select>
+          </div>
+          <div className="selected-stars-filter-buttons">
+            <button
+              type="button"
+              className="selected-stars-filter-button primary"
+              onClick={handleApplyFilters}
+            >
+              Применить
+            </button>
+            <button
+              type="button"
+              className="selected-stars-filter-button secondary"
+              onClick={handleResetFilters}
+            >
+              Сбросить
+            </button>
+          </div>
+        </div>
+      </div>
 
       {filteredSelectedStars.length > 0 && (
         <div className="selected-stars-cards-header">

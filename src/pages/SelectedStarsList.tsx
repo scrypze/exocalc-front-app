@@ -84,7 +84,8 @@ export const SelectedStarsList = () => {
           <div className="selected-stars-header-id">ID</div>
           <div className="selected-stars-header-status">Статус</div>
           <div className="selected-stars-header-scientist">Учёный</div>
-          <div className="selected-stars-header-date">Дата расчётов</div>
+          <div className="selected-stars-header-formed">Дата формирования</div>
+          <div className="selected-stars-header-date">Дата расчёта</div>
           <div className="selected-stars-header-count">Количество звёзд</div>
           <div className="selected-stars-header-actions">Действия</div>
         </div>
@@ -115,8 +116,21 @@ export const SelectedStarsList = () => {
                 </div>
                 <div className="selected-stars-card-meta-item">
                   <span className="selected-stars-card-value">
-                    {selectedStar.date || selectedStar.Date
-                      ? new Date(selectedStar.date || selectedStar.Date).toLocaleDateString('ru-RU', {
+                    {selectedStar.formed_at || selectedStar.formedAt || selectedStar.FormedAt
+                      ? new Date(
+                          selectedStar.formed_at || selectedStar.formedAt || selectedStar.FormedAt,
+                        ).toLocaleDateString('ru-RU', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                        })
+                      : '-'}
+                  </span>
+                </div>
+                <div className="selected-stars-card-meta-item">
+                  <span className="selected-stars-card-value">
+                    {selectedStar.calculation_date || selectedStar.calculationDate || selectedStar.date || selectedStar.Date
+                      ? new Date(selectedStar.calculation_date || selectedStar.calculationDate || selectedStar.date || selectedStar.Date).toLocaleDateString('ru-RU', {
                           day: '2-digit',
                           month: '2-digit',
                           year: 'numeric',

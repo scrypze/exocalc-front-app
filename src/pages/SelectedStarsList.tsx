@@ -12,8 +12,8 @@ export const SelectedStarsList = () => {
   const navigate = useNavigate();
   const { allSelectedStars, loading, error } = useSelector((state: RootState) => state.selectedStars);
   const { isAuthenticated, user } = useSelector((state: RootState) => state.auth);
-  const [dateFrom, setDateFrom] = useState('');
-  const [dateTo, setDateTo] = useState('');
+  const [formedDate, setFormedDate] = useState('');
+  const [calculationDate, setCalculationDate] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   
   const isAstronomer = user?.role === 'astronomer' || user?.role === 'Astronomer';
@@ -22,13 +22,38 @@ export const SelectedStarsList = () => {
     if (!allSelectedStars || allSelectedStars.length === 0) {
       return [];
     }
-    
-    if (isAstronomer) {
-      return allSelectedStars;
+
+    let result = isAstronomer
+      ? allSelectedStars
+      : allSelectedStars.filter((selectedStar: any) => selectedStar.creator_login === user?.login);
+
+    if (calculationDate) {
+      result = result.filter((selectedStar: any) => {
+        const raw =
+          selectedStar.calculation_date ||
+          selectedStar.calculationDate ||
+          selectedStar.date ||
+          selectedStar.Date;
+
+        if (!raw) {
+          return false;
+        }
+
+        if (typeof raw === 'string') {
+          return raw.slice(0, 10) === calculationDate;
+        }
+
+        try {
+          const iso = new Date(raw).toISOString().slice(0, 10);
+          return iso === calculationDate;
+        } catch {
+          return false;
+        }
+      });
     }
-    
-    return allSelectedStars.filter((selectedStar: any) => selectedStar.creator_login === user?.login);
-  }, [allSelectedStars, isAstronomer, user?.login]);
+
+    return result;
+  }, [allSelectedStars, isAstronomer, user?.login, calculationDate]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -44,27 +69,29 @@ export const SelectedStarsList = () => {
     }
   }, [dispatch, navigate, isAuthenticated, user]);
 
-  const handleApplyFilters = () => {
+  useEffect(() => {
     const filters: { date_from?: string; date_to?: string; status?: string } = {};
 
-    if (dateFrom) {
-      filters.date_from = dateFrom;
-    }
-    if (dateTo) {
-      filters.date_to = dateTo;
+    if (formedDate) {
+      filters.date_from = formedDate;
+      filters.date_to = formedDate;
     }
     if (statusFilter) {
       filters.status = statusFilter;
     }
 
+    if (Object.keys(filters).length === 0) {
+      dispatch(getAllSelectedStars());
+      return;
+    }
+
     dispatch(getAllSelectedStars(filters));
-  };
+  }, [dispatch, formedDate, statusFilter]);
 
   const handleResetFilters = () => {
-    setDateFrom('');
-    setDateTo('');
+    setFormedDate('');
+    setCalculationDate('');
     setStatusFilter('');
-    dispatch(getAllSelectedStars());
   };
 
   const statusLabels: { [key: string]: string } = {
@@ -109,26 +136,26 @@ export const SelectedStarsList = () => {
         <div className="selected-stars-filters-row">
           <div className="selected-stars-filter-field">
             <label htmlFor="date-from" className="selected-stars-filter-label">
-              Дата формирования от
+              Дата формирования
             </label>
             <input
               id="date-from"
               type="date"
               className="selected-stars-filter-input"
-              value={dateFrom}
-              onChange={(e) => setDateFrom(e.target.value)}
+              value={formedDate}
+              onChange={(e) => setFormedDate(e.target.value)}
             />
           </div>
           <div className="selected-stars-filter-field">
             <label htmlFor="date-to" className="selected-stars-filter-label">
-              Дата формирования до
+              Дата расчёта
             </label>
             <input
               id="date-to"
               type="date"
               className="selected-stars-filter-input"
-              value={dateTo}
-              onChange={(e) => setDateTo(e.target.value)}
+              value={calculationDate}
+              onChange={(e) => setCalculationDate(e.target.value)}
             />
           </div>
           <div className="selected-stars-filter-field">
@@ -148,13 +175,6 @@ export const SelectedStarsList = () => {
             </select>
           </div>
           <div className="selected-stars-filter-buttons">
-            <button
-              type="button"
-              className="selected-stars-filter-button primary"
-              onClick={handleApplyFilters}
-            >
-              Применить
-            </button>
             <button
               type="button"
               className="selected-stars-filter-button secondary"

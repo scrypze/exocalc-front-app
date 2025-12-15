@@ -320,88 +320,87 @@ export const SelectedStars = () => {
 
       <h3 style={{ color: '#ffffff', marginTop: '30px' }}>Звезды в заявке ({stars.length})</h3>
       
+      {stars.length > 0 && (
+        <div className="selected-stars-header-card">
+          <div className="selected-stars-header-image">Изображение</div>
+          <div className="selected-stars-header-title">Название</div>
+          <div className="selected-stars-header-planets">Вероятное число планет</div>
+          <div className="selected-stars-header-zone">Обитаемая зона</div>
+          <div className="selected-stars-header-comment">Комментарий</div>
+          <div></div>
+          <div></div>
+        </div>
+      )}
+      
       <div className="selected-stars-list">
         {stars.length === 0 ? (
           <div style={{ textAlign: 'center', color: '#ffffff', padding: '20px' }}>
             В заявке нет звезд
           </div>
         ) : (
-          stars.map((star) => (
-            <div key={star.id} className="selected-stars-card">
-              <div className="selected-stars-card-main">
-                <div className="selected-stars-image">
+          stars.map((star) => {
+            const calcData = getStarCalculationData(star.id);
+            return (
+              <div key={star.id} className="selected-stars-card">
+                <div className="selected-stars-card-image">
                   <img 
                     src={star.imagePath || defaultStarImage} 
                     alt={star.title}
                   />
                 </div>
-                
-                <div className="selected-stars-content">
-                  <div className="selected-stars-top">
-                    <div className="selected-stars-title-block">
-                      <h3 className="selected-stars-title">{star.title}</h3>
-                      <div className="selected-stars-buttons">
-                        <Link to={`/star/${star.id}`} className="selected-stars-details-button">
-                          Подробнее
-                        </Link>
-                        {isDraft && (
-                          <button
-                            onClick={() => handleRemoveStar(star.id)}
-                            className="selected-stars-remove-button"
-                          >
-                            Удалить
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                    <div className="selected-stars-meta-row">
-                      <div className="selected-stars-info-item">
-                        <span className="selected-stars-info-label">Вероятное число планет</span>
-                        <span className="selected-stars-info-value">
-                          {(() => {
-                            const calcData = getStarCalculationData(star.id);
-                            return calcData.probableNumberOfPlanets ?? '-';
-                          })()}
-                        </span>
-                      </div>
-                      <div className="selected-stars-info-item">
-                        <span className="selected-stars-info-label">Обитаемая зона</span>
-                        <span className="selected-stars-info-value">
-                          {(() => {
-                            const calcData = getStarCalculationData(star.id);
-                            return calcData.habitableZone || '-';
-                          })()}
-                        </span>
-                      </div>
-                      <div className="selected-stars-info-item">
-                        <span className="selected-stars-info-label">Комментарий</span>
-                        <div className="selected-stars-comment-actions">
-                          <input
-                            type="text"
-                            id={`selected-stars-comment-${star.id}`}
-                            className="selected-stars-comment-input"
-                            value={comments[star.id] ?? ''}
-                            onChange={(e) => handleCommentChange(star.id, e.target.value)}
-                            placeholder="Комментарий"
-                            disabled={!isDraft && !isAstronomer}
-                          />
-                          {(isDraft || isAstronomer) && (
-                            <button
-                              onClick={() => handleSaveComment(star.id)}
-                              className="btn btn-primary selected-stars-comment-save"
-                            >
-                              Сохранить
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    </div>
+                <div className="selected-stars-card-title">
+                  <h3 className="selected-stars-title">{star.title}</h3>
+                </div>
+                <div className="selected-stars-card-planets">
+                  <span className="selected-stars-info-value">
+                    {calcData.probableNumberOfPlanets ?? '-'}
+                  </span>
+                </div>
+                <div className="selected-stars-card-zone">
+                  <span className="selected-stars-info-value">
+                    {calcData.habitableZone || '-'}
+                  </span>
+                </div>
+                <div className="selected-stars-card-comment">
+                  <div className="selected-stars-comment-actions">
+                    <input
+                      type="text"
+                      id={`selected-stars-comment-${star.id}`}
+                      className="selected-stars-comment-input"
+                      value={comments[star.id] ?? ''}
+                      onChange={(e) => handleCommentChange(star.id, e.target.value)}
+                      placeholder="Комментарий"
+                      disabled={!isDraft && !isAstronomer}
+                    />
+                    {(isDraft || isAstronomer) && (
+                      <button
+                        onClick={() => handleSaveComment(star.id)}
+                        className="btn btn-primary selected-stars-comment-save"
+                      >
+                        Сохранить
+                      </button>
+                    )}
+                  </div>
+                </div>
+                <div></div>
+                <div className="selected-stars-card-actions">
+                  <div className="selected-stars-buttons">
+                    <Link to={`/star/${star.id}`} className="selected-stars-details-button">
+                      Подробнее
+                    </Link>
+                    {isDraft && (
+                      <button
+                        onClick={() => handleRemoveStar(star.id)}
+                        className="selected-stars-remove-button"
+                      >
+                        Удалить
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
-              
-            </div>
-          ))
+            );
+          })
         )}
       </div>
     </div>

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import type { RootState, AppDispatch } from '../store';
-import { getAllSelectedStars } from '../slices/selectedStarsSlice';
+import { getAllSelectedStars, moderateSelectedStars } from '../slices/selectedStarsSlice';
 import { getMe } from '../slices/authSlice';
 import { Breadcrumbs } from '../components/Breadcrumbs/Breadcrumbs';
 import './SelectedStarsList.css';
@@ -92,6 +92,18 @@ export const SelectedStarsList = () => {
     setFormedDate('');
     setCalculationDate('');
     setStatusFilter('');
+  };
+
+  const handleModerate = async (id: number, status: 'completed' | 'declined') => {
+    if (!user?.id) {
+      return;
+    }
+    try {
+      await dispatch(moderateSelectedStars({ id, status, moderatorId: user.id })).unwrap();
+      dispatch(getAllSelectedStars());
+    } catch (error: any) {
+      console.error('Ошибка модерации:', error);
+    }
   };
 
   const statusLabels: { [key: string]: string } = {
@@ -259,6 +271,22 @@ export const SelectedStarsList = () => {
                   >
                     Открыть
                   </Link>
+                  {isAstronomer && selectedStar.status === 'formed' && (
+                    <>
+                      <button
+                        onClick={() => handleModerate(selectedStar.id, 'completed')}
+                        className="selected-stars-card-button approve"
+                      >
+                        Одобрить
+                      </button>
+                      <button
+                        onClick={() => handleModerate(selectedStar.id, 'declined')}
+                        className="selected-stars-card-button decline"
+                      >
+                        Отклонить
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

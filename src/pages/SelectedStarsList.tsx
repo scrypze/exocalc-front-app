@@ -15,6 +15,7 @@ export const SelectedStarsList = () => {
   const [formedDate, setFormedDate] = useState('');
   const [calculationDate, setCalculationDate] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [scientistFilter, setScientistFilter] = useState('');
   
   const isAstronomer = user?.role === 'astronomer' || user?.role === 'Astronomer';
   
@@ -52,8 +53,15 @@ export const SelectedStarsList = () => {
       });
     }
 
+    if (scientistFilter) {
+      result = result.filter((selectedStar: any) => {
+        const scientist = selectedStar.scientist || '';
+        return scientist.toLowerCase().includes(scientistFilter.toLowerCase());
+      });
+    }
+
     return result;
-  }, [allSelectedStars, isAstronomer, user?.login, calculationDate]);
+  }, [allSelectedStars, isAstronomer, user?.login, calculationDate, scientistFilter]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -92,6 +100,7 @@ export const SelectedStarsList = () => {
     setFormedDate('');
     setCalculationDate('');
     setStatusFilter('');
+    setScientistFilter('');
   };
 
   const handleModerate = async (id: number, status: 'completed' | 'declined') => {
@@ -185,6 +194,19 @@ export const SelectedStarsList = () => {
               <option value="completed">Завершен</option>
               <option value="declined">Отклонен</option>
             </select>
+          </div>
+          <div className="selected-stars-filter-field">
+            <label htmlFor="scientist" className="selected-stars-filter-label">
+              Учёный
+            </label>
+            <input
+              id="scientist"
+              type="text"
+              className="selected-stars-filter-input"
+              value={scientistFilter}
+              onChange={(e) => setScientistFilter(e.target.value)}
+              placeholder="Введите имя учёного"
+            />
           </div>
           <div className="selected-stars-filter-buttons">
             <button

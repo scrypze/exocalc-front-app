@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState, AppDispatch } from '../store';
-import { logout } from '../slices/authSlice';
+import { logout, getMe } from '../slices/authSlice';
 import logoImage from '../assets/logo.png';
 import { useEffect, useState } from 'react';
 import './Header.css';
@@ -9,7 +9,7 @@ import './Header.css';
 export const Header = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { isAuthenticated, user } = useSelector((state: RootState) => state.auth);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -22,6 +22,12 @@ export const Header = () => {
 
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  useEffect(() => {
+    if (isAuthenticated && !user) {
+      dispatch(getMe());
+    }
+  }, [isAuthenticated, user, dispatch]);
 
   const handleLogout = async () => {
     await dispatch(logout());
@@ -39,18 +45,18 @@ export const Header = () => {
             {!isMobile ? (
               <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
                 {isAuthenticated && (
-                  <>
-                    <Link to="/personal-cabinet" className="header-nav-link">
-                      Личный кабинет
-                    </Link>
-                    <Link to="/selected-stars" className="header-nav-link">
-                      Заявки
-                    </Link>
-                  </>
+                  <Link to="/selected-stars" className="header-nav-link">
+                    Заявки
+                  </Link>
                 )}
               <Link to="/stars" className="header-nav-link">
                 Звёзды
               </Link>
+                {isAuthenticated && (
+                  <Link to="/personal-cabinet" className="header-nav-link">
+                    {user?.login || 'Личный кабинет'}
+                  </Link>
+                )}
                 {isAuthenticated ? (
                   <button onClick={handleLogout} className="header-nav-link" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
                     Выйти
@@ -72,18 +78,18 @@ export const Header = () => {
                   onClick={(event) => event.stopPropagation()}
                 >
                   {isAuthenticated && (
-                    <>
-                      <Link to="/personal-cabinet" className="nav-link-mobile">
-                        Личный кабинет
-                      </Link>
-                      <Link to="/selected-stars" className="nav-link-mobile">
-                        Заявки
-                      </Link>
-                    </>
+                    <Link to="/selected-stars" className="nav-link-mobile">
+                      Заявки
+                    </Link>
                   )}
                   <Link to="/stars" className="nav-link-mobile">
                     Звёзды
                   </Link>
+                  {isAuthenticated && (
+                    <Link to="/personal-cabinet" className="nav-link-mobile">
+                      {user?.login || 'Личный кабинет'}
+                    </Link>
+                  )}
                   {isAuthenticated ? (
                     <button onClick={handleLogout} className="nav-link-mobile" style={{ background: 'none', border: 'none', cursor: 'pointer', width: '100%', textAlign: 'left' }}>
                       Выйти
